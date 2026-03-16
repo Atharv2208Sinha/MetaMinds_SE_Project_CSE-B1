@@ -1,0 +1,4 @@
+Static Files:
+  CSS
+  JavaScript
+  Image & Video Files
