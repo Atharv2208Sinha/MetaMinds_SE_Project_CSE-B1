@@ -108,7 +108,7 @@ def register_user():
         cursor = conn.cursor(dictionary=True)
         
         #Create the User
-        insert_user_query = "INSERT INTO user (name, Email, Password, is_pharmacist) VALUES (%s, %s, %s, %s)"
+        insert_user_query = "INSERT INTO user (name, email, password, is_pharmacist) VALUES (%s, %s, %s, %s)"
         cursor.execute(insert_user_query, (name, email, hashed_password, is_pharmacist ))
         
         #Get the New User's ID ---
@@ -124,19 +124,19 @@ def register_user():
         
         cursor.execute(inventory)
 
-        sales = f"""Create Table {TS}(Bid varchar(50) not null, foreign key(Bid) references {TI}(Bid), Month int not null check(Month between 1 and 12), Year int not null, 
+        sales = f"""Create Table {TS}(Bid varchar(100) not null, foreign key(Bid) references {TI}(Bid), Month int not null check(Month between 1 and 12), Year int not null, 
                                     Sold bool not null, Quantity int not null, Expenditure int not null, Income int not null, 
                                     primary key(Bid, Month, Year, Sold))"""
 
         cursor.execute(sales)
 
-        read = f"""Create Table {TN}(Iname_Bid varchar(50) not null, type varchar(1) not null check(type = 'L' or type = 'S' or type = 'E'), last_read date not null, primary key(iname_Bid, type))"""
+        read = f"""Create Table {TN}(Iname_Bid varchar(100) not null, type varchar(1) not null check(type = 'L' or type = 'S' or type = 'E'), last_read date not null, primary key(iname_Bid, type))"""
         # L for low; S for stale; E for expiry
         cursor.execute(read)
       
         if is_pharmacist:
             TC = f"composition_{new_user_id}"
-            composition = f"""Create Table {TC}(Iname varchar(50) not null, component varchar(100) not null, primary key(iname,component))"""
+            composition = f"""Create Table {TC}(Iname varchar(100) not null, component varchar(100) not null, primary key(iname,component))"""
             cursor.execute(composition)
 
         conn.commit()
@@ -176,7 +176,7 @@ def login():
 
         if user:
             password_bytes = password.encode('utf-8')
-            hashed_password_bytes = user['Password'].encode('utf-8')
+            hashed_password_bytes = user['password'].encode('utf-8')
 
             if bcrypt.checkpw(password_bytes, hashed_password_bytes):
                 # --- JWT CREATION ---
