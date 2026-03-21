@@ -284,18 +284,9 @@ def expiryAlert(current_user_id, cursor, conn):
     cursor.execute(query)
     return cursor.fetchall()
 
-
-if __name__ == '__main__':
-    app.run(debug=True,port=5500)
-
-
-
-## dheeraj work
-
-
 @app.route('/inventory', methods=['GET', 'POST'])
-@token_required # Protects the route and provides user details
-def manage_inventory(current_user_id, is_pharmacist):
+#@token_required # Protects the route and provides user details
+def manage_inventory():
     
     # If the user is just loading the page, show them the HTML
     if request.method == 'GET':
@@ -347,3 +338,6 @@ def manage_inventory(current_user_id, is_pharmacist):
                 cursor.close()
                 connection.close()
     
+
+if __name__ == '__main__':
+    app.run(debug=True,port=5500)
