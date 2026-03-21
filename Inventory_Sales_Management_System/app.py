@@ -289,4 +289,61 @@ if __name__ == '__main__':
     app.run(debug=True,port=5500)
 
 
+
+## dheeraj work
+
+
+@app.route('/inventory', methods=['GET', 'POST'])
+@token_required # Protects the route and provides user details
+def manage_inventory(current_user_id, is_pharmacist):
+    
+    # If the user is just loading the page, show them the HTML
+    if request.method == 'GET':
+        return render_template('inventory.html')
+        
+    # If they clicked 'Submit' on the form, process the data
+    if request.method == 'POST':
+        # 1. Grab data from the HTML form
+        iname = request.form.get('Iname')
+        bid = request.form.get('Bid')
+        quantity = request.form.get('Quantity')
+        purchase_price = request.form.get('Purchase_Price')
+        sale_price = request.form.get('Sale_Price')
+        mrp = request.form.get('MRP')
+        exp_date = request.form.get('Exp_Date')
+        purchase_date = request.form.get('Purchase_Date')
+        location = request.form.get('Location')
+        category = request.form.get('Category')
+
+        # 2. Connect to MySQL using your existing function
+        connection = get_db_connection()
+        if connection is None:
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        try:
+            cursor = connection.cursor()
+            
+            # 3. Insert into the isolated user table (e.g., Inventory_5)
+            # Make sure your database actually has tables named this way!
+            table_name = f"Inventory_{current_user_id}" 
+            
+            sql_query = f"""
+                INSERT INTO {table_name} 
+                (Iname, Bid, Quantity, Purchase_Price, Sale_Price, MRP, Exp_Date, Purchase_Date, Location, Category)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            values = (iname, bid, quantity, purchase_price, sale_price, mrp, exp_date, purchase_date, location, category)
+            
+            cursor.execute(sql_query, values)
+            connection.commit()
+            
+            return jsonify({'message': 'Product added to inventory successfully!'}), 201
+
+        except Error as e:
+            return jsonify({'error': f"Failed to add product: {e}"}), 500
+        
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
     

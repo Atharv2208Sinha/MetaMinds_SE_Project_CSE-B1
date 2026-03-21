@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory Management</title>
+    <style>
+        /* Basic styling to match your wireframe */
+        .container { border: 1px solid black; padding: 20px; width: 80%; margin: auto; }
+        .tabs { margin-bottom: 20px; }
+        .tab-btn { border: 1px solid black; padding: 5px 15px; cursor: pointer; }
+        .form-group { margin-bottom: 10px; }
+        .submit-btn { border: 1px solid blue; border-radius: 15px; padding: 5px 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 style="text-align: center; border-bottom: 1px solid black;">Header</h2>
+    <h3>Title: Inventory Management</h3>
+    
+    <div class="tabs">
+        <span class="tab-btn">Add/Update</span>
+        <span class="tab-btn">Check Status</span>
+    </div>
+
+    <div class="form-area" style="border: 1px solid black; padding: 20px;">
+        <form action="/inventory" method="POST">
+            <div class="form-group"><label>Item Name (Iname):</label> <input type="text" name="Iname" required></div>
+            <div class="form-group"><label>Batch ID (Bid):</label> <input type="text" name="Bid" required></div>
+            <div class="form-group"><label>Quantity:</label> <input type="number" name="Quantity" required></div>
+            <div class="form-group"><label>Purchase Price:</label> <input type="number" step="0.01" name="Purchase_Price" required></div>
+            <div class="form-group"><label>Sale Price:</label> <input type="number" step="0.01" name="Sale_Price" required></div>
+            <div class="form-group"><label>MRP:</label> <input type="number" step="0.01" name="MRP" required></div>
+            <div class="form-group"><label>Exp Date:</label> <input type="date" name="Exp_Date"></div>
+            <div class="form-group"><label>Purchase Date:</label> <input type="date" name="Purchase_Date"></div>
+            <div class="form-group"><label>Location:</label> <input type="text" name="Location"></div>
+            <div class="form-group"><label>Category:</label> <input type="text" name="Category"></div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
