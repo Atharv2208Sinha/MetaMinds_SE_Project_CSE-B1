@@ -37,3 +37,7 @@ This project provides a simple, efficient, and reliable software solution for ma
 - Add new products via the "Add Product" page.
 - Sell products by clicking "Sell" on a product row.
 - View analytics on the "Analytics" page.
+
+### Test Ids
+- email : a@gmail.com
+- password : As2208##
