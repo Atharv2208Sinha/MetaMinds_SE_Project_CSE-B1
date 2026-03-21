@@ -9,7 +9,7 @@ from functools import wraps # <-- For the decorator
 
 app = Flask(__name__)
 CORS(app)
-
+             
 app.config['SECRET_KEY'] = 'alpha_controler'
 
 def get_db_connection():
@@ -113,11 +113,11 @@ def register_user():
         
         #Get the New User's ID ---
         new_user_id = cursor.lastrowid
-
+         
         TI = f"inventory_{new_user_id}"
         TS = f"sales_{new_user_id}"
         TN = f"read_{new_user_id}"
-
+        
         inventory = f"""Create Table {TI}(Iname varchar(50) not null, Bid varchar(50) not null primary key, Quantity int not null, 
                                        Purchase_Price int not null, Sale_Price int not null, MRP int, Exp_Date date not null, 
                                        Purchase_Date date not null, Location varchar(50), Category varchar(50) )"""
@@ -133,7 +133,7 @@ def register_user():
         read = f"""Create Table {TN}(Iname_Bid varchar(50) not null, type varchar(1) not null check(type = 'L' or type = 'S' or type = 'E'), last_read date not null, primary key(iname_Bid, type))"""
         # L for low; S for stale; E for expiry
         cursor.execute(read)
-
+      
         if is_pharmacist:
             TC = f"composition_{new_user_id}"
             composition = f"""Create Table {TC}(Iname varchar(50) not null, component varchar(100) not null, primary key(iname,component))"""
@@ -236,11 +236,11 @@ def get_notifications(current_user_id, is_pharmacist):
 def lowAlert(current_user_id, is_pharmacist, cursor, conn):
     if is_pharmacist: low = 50
     else: low = 10
-
+    
     reset_read = f"""Delete from read_{current_user_id} where type = 'L' and last_read < CURDATE()"""
     cursor.execute(reset_read)
     conn.commit()
-
+    
     query = f"""SELECT Iname, sum(quantity) as Q
                 FROM inventory_{current_user_id} 
                 WHERE Iname NOT IN (
@@ -287,3 +287,6 @@ def expiryAlert(current_user_id, cursor, conn):
 
 if __name__ == '__main__':
     app.run(debug=True,port=5500)
+
+
+    

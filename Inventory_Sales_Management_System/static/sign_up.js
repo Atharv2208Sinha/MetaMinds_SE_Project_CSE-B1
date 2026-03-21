@@ -23,7 +23,7 @@ async function Register(event) {
     const registrationData = {
         name, email, password, occupation
     };
-
+      
     //Send to the new /register endpoint
     try {
         const response = await fetch('/register', {
