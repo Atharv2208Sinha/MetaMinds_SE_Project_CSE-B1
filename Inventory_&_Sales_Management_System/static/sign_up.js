@@ -7,7 +7,7 @@ function validatePassword(password) { return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=
 
 //Form Submission Handlers
 async function Register(event) {
-    event.preventdefault();
+    event.preventDefault();
     //Validate all fields
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
@@ -64,7 +64,7 @@ async function autoLogin(email, password) {
         const result = await response.json();
 
         if (!response.ok) {
-             showNotification('Registration saved, but auto-login failed. Please log in manually.', 'error');
+             showMessage('Registration saved, but auto-login failed. Please log in manually.', 'error');
              return false; // Stop execution and tell Register() it failed
         }
         
