@@ -1,10 +1,10 @@
  * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 .container {
-    width: 50vw; /* Made container slightly wider */
+    width: 50vw;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px; /* Added more padding */
+    padding: 40px;
     text-align: center;
     margin: 0 auto;
 }
@@ -15,20 +15,20 @@
     padding-bottom: 10px;
     padding-left: 20px;
     padding-right: 20px;
-    width: 90vw;      /* <-- ADD THIS LINE */
-    margin: 0 auto;   /* <-- ADD THIS LINE (and set a width) */
+    width: 90vw;
+    margin: 0 auto;
 }
 
-/* --- NEW Input Group Styling --- */
+/* Input Group Styling */
 .register-group {
     position: relative;
-    margin-top: 25px; /* Space out the groups */
+    margin-top: 25px;
 }
 
 .register-group input {
     width: 100%; 
-    padding: 14px 15px; /* Padding for text inside */
-    margin: 0; /* Margin is handled by input-group */
+    padding: 14px 15px;
+    margin: 0;
     border-radius: 10px; 
     border: 1px solid #ccc; 
     outline: none;
@@ -40,14 +40,14 @@
 .register-group label {
     position: absolute;
     left: 15px;
-    top: 14px; /* Vertically centered with 14px padding */
+    top: 14px;
     color: #999;
     font-size: 16px;
-    pointer-events: none; /* Lets you click through the label */
+    pointer-events: none;
     transition: all 0.3s ease;
 }
 
-/* --- The Floating Animation --- */
+/* The Floating Animation */
 .register-group input:focus {
     border-color: #2575fc;
     box-shadow: 0 0 5px rgba(37, 117, 252, 0.3);
@@ -55,22 +55,21 @@
 
 .register-group input:focus + label,
 .register-group input:not(:placeholder-shown) + label {
-    top: -10px; /* Move label up */
-    left: 10px; /* Indent a little */
+    top: -10px;
+    left: 10px;
     font-size: 12px;
-    color: #2575fc; /* Highlight color */
-    background: white; /* Cut through the border */
-    padding: 0 5px; /* Space around the text */
+    color: #2575fc;
+    background: white;
+    padding: 0 5px;
 }
-/* --- End Input Group Styling --- */
 
-
+/* Selection Box Styling */
 select {
     position: relative;
-    margin-top: 25px; /* Space out the groups */
+    margin-top: 25px;
     width: 100%; 
-    padding: 14px 15px; /* Padding for text inside */
-    margin: 0; /* Margin is handled by input-group */
+    padding: 14px 15px;
+    margin: 0;
     border-radius: 10px; 
     border: 1px solid #ccc; 
     outline: none;
@@ -86,11 +85,11 @@ select#occupation:invalid {
     color: #999;
 }
 
-/* Ensure the normal options are black when the user clicks the dropdown */
 select#occupation option {
     color: #000; 
 }
 
+/* Sign Up Button Styliing  */
 .btn-sign {
     background-color: #007bff; /* Green submit button */
     color: white;
