@@ -16,13 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    if (container) container.style.display = 'block';
+    if (container) container.style.display = 'flex';
 
-    const nameInput = document.getElementById('product-name');   // ✅ matches HTML
+    const nameInput = document.getElementById('product-name');   //  matches HTML
     const qtyInput = document.getElementById('product-qty');    // FIXED: was 'sale-qty', HTML has 'product-qty'
     const priceInput = document.getElementById('product-price');  // FIXED: was 'sale-price', HTML has 'product-price'
-    const addBtn = document.getElementById('add-item-btn');   // ✅ matches HTML
-    const billBtn = document.getElementById('generate-bill-btn'); // ✅ matches HTML
+    const addBtn = document.getElementById('add-item-btn');   // matches HTML
+    const billBtn = document.getElementById('generate-bill-btn'); //  matches HTML
 
     if (nameInput) {
         // Typing → debounced search
