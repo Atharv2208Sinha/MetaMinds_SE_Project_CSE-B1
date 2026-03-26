@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sales Analysis - Vendora</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <link rel="stylesheet" href="/static/sales_analysis.css">
+    </head>
+    <body>
+        <header id="non-user">
+            <nav>
+                <div class="nav-left">
+                    <a href="Home" class="logo" style="margin-left: 10px;">Vendora</a>
+                </div>
+
+                <div class="nav-right">
+                    <a href="Sign_Up" class="btn btn-signup" id="signup-btn">Sign Up</a>
+                    <a href="#" class="btn btn-login" id="user-action-btn">Login</a>
+
+                    <div id="loginModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="modal-close-btn">&times;</span>
+                                
+                            <form class="login-form" id="login-modal-form"> 
+                                <h2 style="color: black;">Welcome Back!</h2>
+
+                                <div class="input-group">
+                                    <input type="email" id="login-email" required placeholder="--------@-------">
+                                    <label for="login-email">Email Id</label> 
+                                </div>
+
+                                <div class="input-group">
+                                    <input type="password" id="login-password" placeholder="••••••••" required>
+                                    <label for="login-password">Password</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-submit">Login</button>
+                                    
+                                <p class="signup-prompt">
+                                    Don't have an account? 
+                                    <a href="Sign_Up">Sign Up</a> 
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <header id="user" style="display: none;">
+            <nav>
+                <div class="nav-left">
+                    <div class="hamburger" id="hamburger-btn">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <a href="Main" class="logo">Vendora</a>
+                    <ul class="nav-links">
+                        <li><a href="Inventory_Management" target="_self">Inventory Management</a></li>
+                        <li><a href="Sales_Management" target="_self">Sales Management</a></li>
+                        <li><a href="Sales_Analysis" target="_self">Sales Analysis</a></li>
+                        <li id="alt-med" style="display: none;"><a href="Alternative_Medicine_Advisor" target="_self">Alternative Medicine Advisor</a></li>
+                        <li><a href="Home" target="_self">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-right">
+                    <div class="notification-wrapper" style="position: relative; cursor: pointer;">
+                        <a href="#" id="notification-btn" class="notification-link">
+                            <img src="/static/Notification_icon.png" alt="Notification">
+                        </a>
+                        <span id="notification-dot" class="notification-dot" style="display: none;"></span>
+                    </div>
+
+                    <div id="notificationModal" class="modal">
+                        <div class="modal-content notification-content">
+                            <span class="close" id="notification-close-btn">&times;</span>
+                            <h2>Alerts</h2>
+                            
+                            <div id="notification-list">
+                                <p>Loading...</p>
+                            </div>
+
+                            <button id="mark-read-btn" class="btn btn-submit" style="background-color: #5bc0de; margin-top: 15px;">
+                                Mark as Read
+                            </button>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-logout" id="logout-btn">Logout</a>
+                </div>
+            </nav>
+
+            <div class="mobile-nav" id="mobile-nav">
+                <ul class="nav-links">
+                    <li><a href="Inventory_Management" target="_self">Inventory Management</a></li>
+                    <li><a href="Sales_Management" target="_self">Sales Management</a></li>
+                    <li><a href="Sales_Analysis" target="_self">Sales Analysis</a></li>
+                    <li id="alt-med" style="display: none;"><a href="Alternative_Medicine_Advisor" target="_self">Alternative Medicine Advisor</a></li>
+                    <li><a href="Home" target="_self">About</a></li>
+                </ul>
+            </div>
+        </header>
+
+        <h1 class="title_h1">Sales Analysis</h1>
+
+        <div class="analysis-container">
+            
+            <div class="tabs">
+                <button id="tab-trends" class="tab-btn active">Sales Trends</button>
+                <button id="tab-statement" class="tab-btn">Profit/Loss Statement</button>
+            </div>
+
+            <div class="form-area">
+                
+                <!-- SALES TRENDS VIEW -->
+                <div id="trends-view">
+                    <form id="trends-form">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <select id="trend-type" required>
+                                    <option value="" disabled selected>Select Trend Type</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                                <label for="trend-type">Trend Type *</label>
+                            </div>
+                            
+                            <div class="input-group" id="trend-month-group" style="display: none;">
+                                <select id="trend-month">
+                                    <option value="" disabled selected>Select Month</option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                                <label for="trend-month">Month *</label>
+                            </div>
+
+                            <div class="input-group" id="trend-year-group" style="display: none;">
+                                <input type="number" id="trend-year" placeholder="e.g. 2026" min="2000" max="2100">
+                                <label for="trend-year">Year *</label>
+                            </div>
+
+                            <div class="input-group">
+                                <select id="trend-scope" required>
+                                    <option value="overall" selected>Overall</option>
+                                    <option value="specific">Specific Product</option>
+                                </select>
+                                <label for="trend-scope">Scope *</label>
+                            </div>
+                            
+                            <div class="input-group" id="product-name-group" style="display: none;">
+                                <select id="trend-item">
+                                    <option value="" disabled selected>Select Item</option>
+                                    <option value="Paracetamol">Paracetamol</option>
+                                    <option value="Ibuprofen">Ibuprofen</option>
+                                    <option value="Amoxicillin">Amoxicillin</option>
+                                    <option value="Cetirizine">Cetirizine</option>
+                                    <option value="Aspirin">Aspirin</option>
+                                </select>
+                                <label for="trend-item">Item Name *</label>
+                            </div>
+                        </div>
+                        <div style="text-align: left;">
+                            <button type="submit" class="btn btn-submit" style="margin: 0;">Generate Trends</button>
+                        </div>
+                    </form>
+
+                    <!-- Trends Results Area -->
+                    <div class="results-area" id="trends-results" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                            <h2 class="results-title" style="margin-bottom: 0;">Sales Trends Report</h2>
+                            <button type="button" class="btn btn-submit" id="download-trends-btn" style="background-color: #17a2b8; margin: 0; font-size: 16px;">Download Report</button>
+                        </div>
+                        <div class="chart-placeholder" style="flex-direction: column; gap: 10px; text-align: center; padding: 20px;">
+                            <span>[ Graph / Chart will be rendered here ]</span>
+                            <span style="font-size: 0.9em; font-weight: normal; color: #555;">* System correlates graphical data with changes in months/seasons or specific festivals.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROFIT/LOSS STATEMENT VIEW -->
+                <div id="statement-view" style="display: none;">
+                    <form id="statement-form">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <select id="statement-month" required>
+                                    <option value="" disabled selected>Select Month</option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                                <label for="statement-month">Month *</label>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" id="statement-year" placeholder="e.g. 2026" min="2000" max="2100" required>
+                                <label for="statement-year">Year *</label>
+                            </div>
+                        </div>
+                        <div style="text-align: left;">
+                            <button type="submit" class="btn btn-submit" style="margin: 0;">Generate Statement</button>
+                        </div>
+                    </form>
+
+                    <!-- Statement Results Area -->
+                    <div class="results-area" id="statement-results" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                            <h2 class="results-title" style="margin-bottom: 0;">Financial Summary</h2>
+                            <button type="button" class="btn btn-submit" id="download-statement-btn" style="background-color: #17a2b8; margin: 0; font-size: 16px;">Download Report</button>
+                        </div>
+                        
+                        <!-- Financial Summary (Duration Table) -->
+                        <div class="detailed-statement-container" style="margin-bottom: 30px;">
+                            <table class="statement-table">
+                                <thead>
+                                    <tr>
+                                        <th>Duration</th>
+                                        <th>Sold/Discarded</th>
+                                        <th>Quantity</th>
+                                        <th>Expenditure</th>
+                                        <th>Income</th>
+                                        <th>Total</th>
+                                        <th>Net Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="2" id="summary-duration-text">Month/Year</td>
+                                        <td>Sold</td>
+                                        <td id="summary-sold-qty">0</td>
+                                        <td id="summary-sold-exp">-</td>
+                                        <td id="summary-sold-inc" style="color: #28a745; font-weight:bold;">₹ 0</td>
+                                        <td id="summary-sold-total" style="color: #28a745; font-weight:bold;">₹ 0</td>
+                                        <td rowspan="2" id="summary-net-total" style="font-weight:bold;">₹ 0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Discarded</td>
+                                        <td id="summary-disc-qty">0</td>
+                                        <td id="summary-disc-exp" style="color: #dc3545; font-weight:bold;">₹ 0</td>
+                                        <td id="summary-disc-inc">-</td>
+                                        <td id="summary-disc-total" style="color: #dc3545; font-weight:bold;">₹ 0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Detailed Table View (from Wireframe) -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 15px;">
+                            <h3 style="color: black; margin: 0; padding: 0; border: none;">Detailed Statement</h3>
+                            <div class="table-filter-container">
+                                <label for="detailed-item-filter">Filter by Item:</label>
+                                <select id="detailed-item-filter">
+                                    <option value="all">All Items</option>
+                                    <option value="Paracetamol">Paracetamol</option>
+                                    <option value="Amoxicillin">Amoxicillin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="detailed-statement-container">
+                            <table class="statement-table">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Sold/Discarded</th>
+                                        <th>Quantity</th>
+                                        <th>Expenditure</th>
+                                        <th>Income</th>
+                                        <th>Total</th>
+                                        <th>Net Total</th>
+                                    </tr>
+                                </thead>
+                                <!-- Group rows by tbody for easy filtering -->
+                                <tbody class="detailed-item-group" data-item="Paracetamol">
+                                    <tr>
+                                        <td rowspan="2">Paracetamol</td>
+                                        <td>Sold</td>
+                                        <td>500</td>
+                                        <td>-</td>
+                                        <td>₹ 5,000</td>
+                                        <td style="color: #28a745; font-weight:bold;">₹ 5,000</td>
+                                        <td rowspan="2">₹ 4,500</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Discarded</td>
+                                        <td>50</td>
+                                        <td>₹ 500</td>
+                                        <td>-</td>
+                                        <td style="color: #dc3545; font-weight:bold;">-₹ 500</td>
+                                    </tr>
+                                </tbody>
+                                <tbody class="detailed-item-group" data-item="Amoxicillin">
+                                    <tr>
+                                        <td rowspan="2">Amoxicillin</td>
+                                        <td>Sold</td>
+                                        <td>300</td>
+                                        <td>-</td>
+                                        <td>₹ 9,000</td>
+                                        <td style="color: #28a745; font-weight:bold;">₹ 9,000</td>
+                                        <td rowspan="2">₹ 8,100</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Discarded</td>
+                                        <td>30</td>
+                                        <td>₹ 900</td>
+                                        <td>-</td>
+                                        <td style="color: #dc3545; font-weight:bold;">-₹ 900</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script src="/static/header.js"></script>
+        <script src="/static/sales_analysis.js"></script>
+    </body>
+</html>

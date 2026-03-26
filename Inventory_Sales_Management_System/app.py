@@ -284,6 +284,14 @@ def expiryAlert(current_user_id, cursor, conn):
     cursor.execute(query)
     return cursor.fetchall()
 
+@app.route('/Inventory_Management')
+def salesMgmt():
+    return render_template('inventory_management.html')
+
+
+@app.route('/Sales_Analysis')
+def salesAnalysis():
+    return render_template('sales_analysis.html')
 
 if __name__ == '__main__':
     app.run(debug=True,port=5500)

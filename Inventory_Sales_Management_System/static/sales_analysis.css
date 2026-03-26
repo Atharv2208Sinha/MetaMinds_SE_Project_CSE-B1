@@ -1,0 +1,205 @@
+/* Container sizing and centering */
+.analysis-container {
+    width: 90vw;
+    margin: 20px auto;
+    font-family: inherit;
+}
+
+/* Tab Layout mimicking a file folder layout */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-left: 20px; /* Slight indent like the sketch */
+}
+
+.tab-btn {
+    padding: 12px 25px;
+    border: 2px solid black;
+    border-bottom: none; /* Merges with the border below */
+    background-color: #d3d3d3;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: background-color 0.2s;
+}
+
+.tab-btn:hover {
+    background-color: #e2e2e2;
+}
+
+.tab-btn.active {
+    background-color: #9f9f9f; /* Matches body background */
+    color: black;
+    position: relative;
+    top: 2px; /* Pull down slightly to cover the form border */
+}
+
+/* Form Area Box */
+.form-area {
+    border: 2px solid black;
+    padding: 30px;
+    background-color: transparent; /* Maintains global theme */
+    border-radius: 0 8px 8px 8px; /* Smooth corners except top-left */
+}
+
+/* Layout for input fields inside forms */
+.input-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 15px; /* Spacing for the floating labels */
+    margin-bottom: 20px;
+}
+
+.input-row .input-group {
+    flex: 1;
+    min-width: 200px; /* Ensures fields stack on mobile */
+    margin-bottom: 15px;
+}
+
+/* Align select element with standard inputs from style.css */
+.input-group select {
+    width: 100%;
+    padding: 15px 10px;
+    border: 2px solid black;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+    background-color: white;
+    appearance: none; /* Removes default dropdown arrow to match style */
+    cursor: pointer;
+}
+
+.input-group select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* Results Area Formatting */
+.results-area {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px dashed #666; /* Separator between form and results */
+}
+
+.results-title {
+    font-size: 1.5em;
+    color: black;
+    margin-bottom: 20px;
+}
+
+/* Chart Placeholder */
+.chart-placeholder {
+    width: 100%;
+    height: 350px;
+    background-color: #e2e2e2;
+    border: 2px solid black;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Summary Cards for Profit/Loss Statement */
+.summary-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.card {
+    flex: 1;
+    min-width: 200px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+    color: #333;
+    text-transform: uppercase;
+}
+
+.card p {
+    margin: 0;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+/* Color coding for financial statuses */
+.revenue-card p { color: #28a745; } /* Green */
+.expenditure-card p { color: #dc3545; } /* Red */
+.profit-card p { color: #007bff; } /* Blue */
+
+
+/* --- Detailed Statement Table Styles (Wireframe Matches) --- */
+.detailed-statement-container {
+    margin-top: 15px;
+    overflow-x: auto; /* Responsive scrolling for smaller screens */
+    background-color: white;
+    border: 2px solid black; /* Outer border */
+}
+
+.statement-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.statement-table th, .statement-table td {
+    border: 1px solid black; /* Inner borders */
+    padding: 10px 15px;
+    color: black;
+    text-align: center;
+}
+
+.statement-table th {
+    background-color: #a9d08e; /* Wireframe light green */
+    font-weight: bold;
+    font-size: 1.05em;
+    border-bottom: 2px solid black;
+}
+
+.statement-table td[rowspan] {
+    vertical-align: middle;
+    font-weight: bold;
+    background-color: #f2f2f2; /* Light gray to distinguish grouped item/duration */
+}
+
+/* Table Filter Styles */
+.table-filter-container {
+    display: flex;
+    align-items: center;
+}
+
+.table-filter-container label {
+    margin-right: 10px;
+    font-weight: bold;
+    color: black;
+}
+
+.table-filter-container select {
+    padding: 8px 12px;
+    border: 2px solid black;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: white;
+    outline: none;
+}
+
+.table-filter-container select:focus {
+    border-color: var(--primary-color);
+}
