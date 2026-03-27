@@ -8,25 +8,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle Trend Type Toggle (Monthly vs Yearly)
     const trendType = document.getElementById('trend-type');
-    const trendMonthGroup = document.getElementById('trend-month-group');
     const trendYearGroup = document.getElementById('trend-year-group');
-    const trendMonth = document.getElementById('trend-month');
+    const trendStartYearGroup = document.getElementById('trend-start-year-group');
+    const trendEndYearGroup = document.getElementById('trend-end-year-group');
     const trendYear = document.getElementById('trend-year');
+    const trendStartYear = document.getElementById('trend-start-year');
+    const trendEndYear = document.getElementById('trend-end-year');
 
     if(trendType) {
         trendType.addEventListener('change', (e) => {
             if(e.target.value === 'monthly') {
-                // If Monthly, show both Month and Year selectors
-                trendMonthGroup.style.display = 'block';
+                // If Monthly, show only the Year selector
                 trendYearGroup.style.display = 'block';
-                if(trendMonth) trendMonth.required = true;
+                trendStartYearGroup.style.display = 'none';
+                trendEndYearGroup.style.display = 'none';
+                
                 if(trendYear) trendYear.required = true;
+                if(trendStartYear) trendStartYear.required = false;
+                if(trendEndYear) trendEndYear.required = false;
+                
             } else if (e.target.value === 'yearly') {
-                // If Yearly, only show the Year selector
-                trendMonthGroup.style.display = 'none';
-                trendYearGroup.style.display = 'block';
-                if(trendMonth) trendMonth.required = false;
-                if(trendYear) trendYear.required = true;
+                // If Yearly, show Start and End Year selectors
+                trendYearGroup.style.display = 'none';
+                trendStartYearGroup.style.display = 'block';
+                trendEndYearGroup.style.display = 'block';
+                
+                if(trendYear) trendYear.required = false;
+                if(trendStartYear) trendStartYear.required = true;
+                if(trendEndYear) trendEndYear.required = true;
             }
         });
     }
@@ -40,6 +49,19 @@ document.addEventListener('DOMContentLoaded', () => {
         trendScope.addEventListener('change', (e) => {
             if(e.target.value === 'specific') {
                 productNameGroup.style.display = 'block';
+                const allItems = getAllItems();
+                if(trendItem) {
+                    // Clear existing options
+                    trendItem.innerHTML = '<option value="" disabled selected>Select Item</option>';
+
+                    // Add each item as an option
+                    allItems.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.batch_id;
+                        option.textContent = item.item_name;
+                        trendItem.appendChild(option);
+                    });
+                }
                 if(trendItem) trendItem.required = true;
             } else {
                 productNameGroup.style.display = 'none';
@@ -52,6 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const trendsForm = document.getElementById('trends-form');
     const statementForm = document.getElementById('statement-form');
 
+    let salesChartInstance = null; // Store chart globally to destroy before re-rendering
+
     if(trendsForm) {
         trendsForm.addEventListener('submit', (e) => {
             e.preventDefault(); // Prevent page reload
@@ -60,8 +84,93 @@ document.addEventListener('DOMContentLoaded', () => {
             const resultsArea = document.getElementById('trends-results');
             resultsArea.style.display = 'block';
 
-            // Fetch simulated data based on user input
+            const trendType = document.getElementById('trend-type').value;
             console.log('Generating trends report...');
+
+            let labels = [];
+            let chartData = [];
+            let xAxisLabel = '';
+
+            if (trendType === 'monthly') {
+                // Monthly trend: X-Axis represents months of a specific year
+                const selectedYear = document.getElementById('trend-year').value || 'Selected Year';
+                labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                
+                // sales data for each month
+                chartData = getMonthlySalesData(selectedYear);
+
+                console.log('chartData', chartData);
+                xAxisLabel = `Months of ${selectedYear}`;
+                
+            } else if (trendType === 'yearly') {
+                // Yearly trend: X-Axis represents a range of specific years
+                const start = parseInt(document.getElementById('trend-start-year').value) || 2020;
+                const end = parseInt(document.getElementById('trend-end-year').value) || 2026;
+
+                for(let year = start; year <= end; year++) {
+                    labels.push(year.toString());
+                }
+                
+                // Yearly sales data for each year in the range
+                chartData = getYearlySalesData(start, end);
+                console.log('chartData', chartData);
+                xAxisLabel = `Years (${start} - ${end})`;
+            }
+
+            // Hide placeholder text and show canvas
+            document.getElementById('chart-placeholder-text').style.display = 'none';
+            const canvas = document.getElementById('salesChart');
+            canvas.style.display = 'block';
+
+            const ctx = canvas.getContext('2d');
+
+            // Destroy existing chart if it exists so new data doesn't overlap the old graph
+            if (salesChartInstance) {
+                salesChartInstance.destroy();
+            }
+
+            salesChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Sales',
+                        data: chartData,
+                        backgroundColor: '#a9d08e', 
+                        borderColor: '#28a745',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Sales',
+                                color: 'black',
+                                font: { weight: 'bold' }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: xAxisLabel,
+                                color: 'black',
+                                font: { weight: 'bold' }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
         });
     }
 
@@ -97,19 +206,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle Report Downloads (SRS Postcondition)
+    // Handle Report Downloads
     const downloadTrendsBtn = document.getElementById('download-trends-btn');
     const downloadStatementBtn = document.getElementById('download-statement-btn');
 
     if(downloadTrendsBtn) {
         downloadTrendsBtn.addEventListener('click', () => {
-            alert("Downloading Sales Trends Report. You can now share this with your CA or business advisor.");
+            alert("Downloading Sales Trends Report");
+            //TODO: Implement actual download functionality
         });
     }
 
     if(downloadStatementBtn) {
         downloadStatementBtn.addEventListener('click', () => {
-            alert("Downloading Profit/Loss Statement. You can now share this with your CA or business advisor.");
+            alert("Downloading Profit/Loss Statement.");
+            //TODO: Implement actual download functionality 
         });
     }
 
@@ -147,7 +258,7 @@ function switchTab(tabName) {
     document.getElementById('trends-results').style.display = 'none';
     document.getElementById('statement-results').style.display = 'none';
 
-    // Clear form inputs when switching tabs (Optional but clean UX)
+    // Clear form inputs when switching tabs
     const trendsForm = document.getElementById('trends-form');
     const statementForm = document.getElementById('statement-form');
     if(trendsForm) trendsForm.reset();
@@ -157,11 +268,14 @@ function switchTab(tabName) {
     const productNameGroup = document.getElementById('product-name-group');
     if(productNameGroup) productNameGroup.style.display = 'none';
     
-    const trendMonthGroup = document.getElementById('trend-month-group');
-    if(trendMonthGroup) trendMonthGroup.style.display = 'none';
-    
     const trendYearGroup = document.getElementById('trend-year-group');
     if(trendYearGroup) trendYearGroup.style.display = 'none';
+
+    const trendStartYearGroup = document.getElementById('trend-start-year-group');
+    if(trendStartYearGroup) trendStartYearGroup.style.display = 'none';
+
+    const trendEndYearGroup = document.getElementById('trend-end-year-group');
+    if(trendEndYearGroup) trendEndYearGroup.style.display = 'none';
 
     // Set new active states
     if(tabName === 'trends') {
@@ -172,4 +286,52 @@ function switchTab(tabName) {
         statement.classList.add('active');
         statement_v.style.display = 'block';
     }
+}
+
+function getMonthlySalesData(year) {
+    //TODO: fetch data from server
+    //Output: [{month: sales}, {month: sales}, ...]
+    //Example: [ { Jan: 12000 }, { Feb: 15000 }, ...]
+
+    //dummy data
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const salesData = {};
+    months.forEach(month => {
+        salesData[month] = Math.floor(Math.random() * 15000) + 5000; // Random sales between 5000 and 20000
+    });
+    return salesData;
+}
+
+function getYearlySalesData(startYear, endYear) {
+    //TODO: fetch data from server
+    //Output: {year: sales, year: sales, ...}
+    //Example: { 2020: 150000, 2021: 200000,} 
+
+    //dummy data 
+    const yearsCount = endYear - startYear + 1;
+    let salesData = {};
+    const sales = Array.from({ length: yearsCount }, () => Math.floor(Math.random() * 400000) + 100000);
+    sales.map((sale, index) => {
+        const year = startYear + index;
+        salesData[year] = sale;
+    });
+    console.log('salesData', salesData);
+    return salesData;
+}
+
+function getAllItems(){
+    //TODO: Implement functionality to fetch all items
+    //Output: [{batch_id: 'BATCH001', item_name: 'Item A'}, {batch_id: 'BATCH002', item_name: 'Item B'}, ...]
+
+    //dummy data 
+    return [
+        {
+            batch_id: 'BATCH001',
+            item_name: 'Item A',
+        },
+        {
+            batch_id: 'BATCH002',
+            item_name: 'Item B',    
+        },
+    ]
 }

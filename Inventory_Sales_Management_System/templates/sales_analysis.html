@@ -6,6 +6,8 @@
         <title>Sales Analysis - Vendora</title>
         <link rel="stylesheet" href="/static/style.css">
         <link rel="stylesheet" href="/static/sales_analysis.css">
+        <!-- Add Chart.js for rendering graphs -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
     <body>
         <header id="non-user">
@@ -127,28 +129,19 @@
                                 <label for="trend-type">Trend Type *</label>
                             </div>
                             
-                            <div class="input-group" id="trend-month-group" style="display: none;">
-                                <select id="trend-month">
-                                    <option value="" disabled selected>Select Month</option>
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </select>
-                                <label for="trend-month">Month *</label>
-                            </div>
-
                             <div class="input-group" id="trend-year-group" style="display: none;">
                                 <input type="number" id="trend-year" placeholder="e.g. 2026" min="2000" max="2100">
                                 <label for="trend-year">Year *</label>
+                            </div>
+
+                            <div class="input-group" id="trend-start-year-group" style="display: none;">
+                                <input type="number" id="trend-start-year" placeholder="e.g. 2020" min="2000" max="2100">
+                                <label for="trend-start-year">Start Year *</label>
+                            </div>
+
+                            <div class="input-group" id="trend-end-year-group" style="display: none;">
+                                <input type="number" id="trend-end-year" placeholder="e.g. 2026" min="2000" max="2100">
+                                <label for="trend-end-year">End Year *</label>
                             </div>
 
                             <div class="input-group">
@@ -162,11 +155,6 @@
                             <div class="input-group" id="product-name-group" style="display: none;">
                                 <select id="trend-item">
                                     <option value="" disabled selected>Select Item</option>
-                                    <option value="Paracetamol">Paracetamol</option>
-                                    <option value="Ibuprofen">Ibuprofen</option>
-                                    <option value="Amoxicillin">Amoxicillin</option>
-                                    <option value="Cetirizine">Cetirizine</option>
-                                    <option value="Aspirin">Aspirin</option>
                                 </select>
                                 <label for="trend-item">Item Name *</label>
                             </div>
@@ -183,7 +171,13 @@
                             <button type="button" class="btn btn-submit" id="download-trends-btn" style="background-color: #17a2b8; margin: 0; font-size: 16px;">Download Report</button>
                         </div>
                         <div class="chart-placeholder" style="flex-direction: column; gap: 10px; text-align: center; padding: 20px;">
-                            <span>[ Graph / Chart will be rendered here ]</span>
+                            <span id="chart-placeholder-text">[ Graph / Chart will be rendered here ]</span>
+                            
+                            <!-- Container for the Canvas -->
+                            <div style="position: relative; height: 280px; width: 100%;">
+                                <canvas id="salesChart" style="display: none;"></canvas>
+                            </div>
+
                             <span style="font-size: 0.9em; font-weight: normal; color: #555;">* System correlates graphical data with changes in months/seasons or specific festivals.</span>
                         </div>
                     </div>
