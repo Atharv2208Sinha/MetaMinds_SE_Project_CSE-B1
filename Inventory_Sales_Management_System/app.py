@@ -19,6 +19,8 @@ def get_db_connection():
             host='localhost',
             user='vendora_app',
             password='Vendora@2026',
+            #  user='root',
+            # password='9813273362',
             database='se_project'
         )
         if connection.is_connected():
