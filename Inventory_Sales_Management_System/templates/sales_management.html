@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sales Management - Vendora</title>
+        <link rel="stylesheet" href="/static/style.css?v=2">
+        <link rel="stylesheet" href="/static/sales_management.css?v=2">
+    </head>
+    <body>
+        <header id="non-user">
+            <nav>
+                <div class="nav-left">
+                    <a href="Home" class="logo" style="margin-left: 10px;">Vendora</a>
+                </div>
+
+                <div class="nav-right">
+                    <a href="Sign_Up" class="btn btn-signup" id="signup-btn">Sign Up</a>
+                    <a href="#" class="btn btn-login" id="user-action-btn">Login</a>
+
+                    <div id="loginModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="modal-close-btn">&times;</span>
+                                
+                            <form class="login-form" id="login-modal-form"> 
+                                <h2 style="color: black;">Welcome Back!</h2>
+
+                                <div class="input-group">
+                                    <input type="email" id="login-email" required placeholder="--------@-------">
+                                    <label for="login-phone">Email Id</label> </div>
+
+                                <div class="input-group">
+                                    <input type="password" id="login-password" placeholder="••••••••" required>
+                                    <label for="login-password">Password</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-submit">Login</button>
+                                    
+                                <p class="signup-prompt">
+                                    Don't have an account? 
+                                    <a href="Sign_Up">Sign Up</a> 
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <header id="user" style="display: none;">
+            <nav>
+                <div class="nav-left">
+                    <div class="hamburger" id="hamburger-btn">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <a href="Main" class="logo">Vendora</a>
+                    <ul class="nav-links">
+                        <li><a href="Inventory_Management" target="_self">Inventory Management</a></li>
+                        <li><a href="Sales_Management" target="_self">Sales Management</a></li>
+                        <li><a href="Sales_Analysis" target="_self">Sales Analysis</a></li>
+                        <li id="alt-med" style="display: none;"><a href="Alternative_Medicine_Advisor" target="_self">Alternative Medicine Advisor</a></li>
+                        <li><a href="Home" target="_self">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-right">
+                    <div class="notification-wrapper" style="position: relative; cursor: pointer;">
+                        <a href="#" id="notification-btn" class="notification-link">
+                            <img src="/static/Notification_icon.png" alt="Notification">
+                        </a>
+                        <span id="notification-dot" class="notification-dot" style="display: none;"></span>
+                    </div>
+
+                    <div id="notificationModal" class="modal">
+                        <div class="modal-content notification-content">
+                            <span class="close" id="notification-close-btn">&times;</span>
+                            <h2>
+                                Alerts
+                            </h2>
+                            
+                            <div id="notification-list">
+                                <p>Loading...</p>
+                            </div>
+
+                            <button id="mark-read-btn" class="btn btn-submit" style="background-color: #5bc0de; margin-top: 15px;">
+                                Mark as Read
+                            </button>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-logout" id="logout-btn">Logout</a>
+                </div>
+            </nav>
+
+            <div class="mobile-nav" id="mobile-nav">
+                <ul class="nav-links">
+                    <li><a href="Inventory_Management" target="_self">Inventory Management</a></li>
+                    <li><a href="Sales_Management" target="_self">Sales Management</a></li>
+                    <li><a href="Sales_Analysis" target="_self">Sales Analysis</a></li>
+                    <li id="alt-med" style="display: none;"><a href="Alternative_Medicine_Advisor" target="_self">Alternative Medicine Advisor</a></li>
+                    <li><a href="Home" target="_self">About</a></li>
+                </ul>
+            </div>
+        </header>
+
+        <h1 class="title_h1">Sales Management</h1>
+
+        <div id="sales-container" class="sales-container">
+            
+            <div class="form-area">
+                <!-- Sales Entry Row -->
+                <div class="sales-entry-row">
+                    <div class="form-group sales-name-group">
+                        <label>Product Name *</label>
+                        <div class="autocomplete-wrapper">
+                            <input type="text" id="product-name" placeholder="Search product..." autocomplete="off" required>
+                            <div id="autocomplete-dropdown" class="autocomplete-dropdown"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group sales-qty-group">
+                        <label>Quantity *</label>
+                        <input type="number" id="product-qty" min="1" placeholder="Qty" required>
+                    </div>
+
+                    <div class="form-group sales-price-group">
+                        <label>Price</label>
+                        <input type="text" id="product-price" readonly placeholder="SP / MRP">
+                    </div>
+
+                    <div class="form-group sales-add-group">
+                        <label>&nbsp;</label>
+                        <button type="button" id="add-item-btn" class="btn-add-item">+ Add</button>
+                    </div>
+                </div>
+
+                <!-- Price Info Watermark -->
+                <div id="price-info" class="price-info-watermark">
+                    <span id="price-sp-label">Sale Price: —</span>
+                    <span class="price-divider">|</span>
+                    <span id="price-mrp-label">MRP: —</span>
+                    <span class="price-divider">|</span>
+                    <span id="price-stock-label">Stock: —</span>
+                </div>
+
+                <!-- Bill Items Table -->
+                <div id="bill-items-section" class="bill-items-section" style="display: none;">
+                    <h3>Bill Items</h3>
+                    <div class="table-responsive">
+                        <table id="bill-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product</th>
+                                    <th>Batch ID</th>
+                                    <th>Qty</th>
+                                    <th>Unit Price</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bill-body">
+                            </tbody>
+                            <tfoot>
+                                <tr class="bill-total-row">
+                                    <td colspan="5" style="text-align: right; font-weight: bold;">Grand Total:</td>
+                                    <td id="grand-total" style="font-weight: bold;">₹0</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Generate Bill Button -->
+                <div class="submit-wrapper">
+                    <button type="button" id="generate-bill-btn" class="btn-submit oval-btn" disabled>Generate Bill</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="/static/header.js?v=2"></script>
+        <script src="/static/sales_management.js?v=2"></script>
+    </body>
+</html>

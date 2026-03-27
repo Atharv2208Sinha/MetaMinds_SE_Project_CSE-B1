@@ -1,0 +1,278 @@
+/* Sales Management Container */
+.sales-container {
+    width: 90vw;
+    margin: 20px auto;
+    font-family: inherit;
+    display: none;
+}
+
+/* Form Area – matches inventory_management pattern */
+.sales-container .form-area {
+    border: 2px solid black;
+    padding: 30px;
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+/* Sales Entry Row – horizontal layout */
+.sales-entry-row {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.sales-name-group {
+    flex: 3;
+    min-width: 220px;
+    position: relative;
+}
+
+.sales-qty-group {
+    flex: 1;
+    min-width: 100px;
+}
+
+.sales-price-group {
+    flex: 2;
+    min-width: 150px;
+}
+
+.sales-add-group {
+    flex: 0 0 auto;
+}
+
+/* Form labels and inputs */
+.sales-container .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.sales-container .form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: black;
+    font-size: 15px;
+}
+
+.sales-container .form-group input {
+    padding: 12px;
+    border: 1px solid black;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: white;
+}
+
+.sales-container .form-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+.sales-container .form-group input[readonly] {
+    background-color: #f0f0f0;
+    color: #555;
+    cursor: default;
+}
+
+/* Add Item Button */
+.btn-add-item {
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: white;
+    border: 2px solid #0056b3;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    white-space: nowrap;
+}
+
+.btn-add-item:hover {
+    background-color: #0056b3;
+}
+
+.btn-add-item:active {
+    transform: scale(0.97);
+}
+
+/* Autocomplete Dropdown Wrapper */
+.autocomplete-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Dropdown panel — works with either ID your HTML uses */
+#search-results,
+#autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: none; /* Hidden by default */
+    border-radius: 0 0 6px 6px;
+}
+
+/* Each item row */
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+    transition: background-color 0.1s;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+/* Hover highlight */
+.dropdown-item:hover {
+    background-color: #e8f0fe;
+}
+
+/* FIX 2 — Keyboard navigation highlight.
+   JS adds/removes this class as the user presses ↑ / ↓.
+   Without this rule there is zero visual feedback for keyboard users. */
+.dropdown-item.autocomplete-active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Price Info Watermark */
+.price-info-watermark {
+    display: none;
+    gap: 12px;
+    align-items: center;
+    margin-top: 10px;
+    padding: 8px 14px;
+    background-color: #f8f9fa;
+    border: 1px dashed #aaa;
+    border-radius: 6px;
+    color: #666;
+    font-size: 14px;
+}
+
+.price-info-watermark span {
+    white-space: nowrap;
+}
+
+.price-divider {
+    color: #ccc;
+    font-weight: 300;
+}
+
+/* Bill Items Table Section */
+.bill-items-section {
+    margin-top: 25px;
+}
+
+.bill-items-section h3 {
+    margin-bottom: 10px;
+    color: black;
+    font-size: 1.3em;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+}
+
+#bill-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+#bill-table th,
+#bill-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+#bill-table th {
+    background-color: #343a40;
+    color: white;
+    font-size: 14px;
+}
+
+#bill-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#bill-table tr:hover {
+    background-color: #e2e6ea;
+}
+
+.bill-total-row {
+    background-color: #e9ecef !important;
+}
+
+.bill-total-row:hover {
+    background-color: #dee2e6 !important;
+}
+
+/* Remove Item Button */
+.btn-remove-item {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.btn-remove-item:hover {
+    background-color: #bd2130;
+}
+
+/* Generate Bill Button */
+.sales-container .submit-wrapper {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.sales-container .oval-btn {
+    padding: 12px 50px;
+    border-radius: 30px;
+    border: 2px solid black;
+    font-size: 20px;
+}
+
+.sales-container .oval-btn:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+    border-color: #888;
+}
+
+.sales-container .oval-btn:disabled:hover {
+    background-color: #aaa;
+    text-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sales-entry-row {
+        flex-direction: column;
+    }
+
+    .sales-name-group,
+    .sales-qty-group,
+    .sales-price-group,
+    .sales-add-group {
+        flex: 1;
+        min-width: 100%;
+    }
+
+    .btn-add-item {
+        width: 100%;
+    }
+}

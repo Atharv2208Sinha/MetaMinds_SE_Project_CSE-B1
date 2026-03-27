@@ -1,293 +1,408 @@
-//Main Page Listener
+// ========== Sales Management JS ==========
+
+let billItems = [];
+let selectedProduct = null;
+let searchTimeout = null;
+let currentFocus = -1;
+
+// ---- Page Initialization ----
 document.addEventListener('DOMContentLoaded', () => {
-    const payload = setpage();
-
-    //Switch Tabs
-    const add = document.getElementById('tab-add');
-    const check = document.getElementById('tab-check');
-
-    if(add){ add.onclick = () => switchTab('add') }
-    if(check){ check.onclick = () => switchTab('check') }
-
-    //Toggle Composition
-    if(payload.is_pharmacist === 1 || payload.is_pharmacist === true) {
-        const entrymode = document.getElementById('entry-mode');
-        if(entrymode){ entrymode.onclick = () => toggleComposition() }
-    }
-
-    const addform = document.getElementById('add-inventory-form');
-    if (addform) {
-        addform.addEventListener('submit', submitInventory);
-    }
-
-    const addComp = document.getElementById('add-comp');
-    if(addComp){ addComp.onclick = () => addCompField() }
-
-    const checkStatus = document.getElementById('check-status-form');
-    if(checkStatus){ 
-    checkStatus.addEventListener('submit', checkInventoryStatus); 
-    }
-});
-
-function setpage() {
     const token = localStorage.getItem('token');
-    const container = document.getElementById('inventory-container');
+    const container = document.getElementById('sales-container');
+
     if (!token) {
-        showMessage('Access Denied: Please login to access.', 'error', 1000);
-        setTimeout(() => {
-            window.location.href = 'Home';
-        }, 1100);
+        alert('Access Denied: Please login to access.');
+        window.location.href = 'Home';
         return;
     }
-    const payload = parseJwt(token);
-    if (container) {
-        container.style.display = 'block';
-    }
 
-    const mode = document.getElementById('mode-selector');
-    const formGrid = document.querySelector('.form-grid');
+    if (container) container.style.display = 'block';
 
-    if (payload.is_pharmacist === 1 || payload.is_pharmacist === true) {
-        mode.style.display = 'flex'; 
-        formGrid.classList.add('pharmacist-layout');
-        toggleComposition();
-    } else {
-        mode.style.display = 'none';
-        formGrid.classList.remove('pharmacist-layout');
-    }
+    const nameInput = document.getElementById('product-name');
+    const qtyInput = document.getElementById('sale-qty');
+    const priceInput = document.getElementById('sale-price');
+    const addBtn = document.getElementById('add-item-btn');
+    const billBtn = document.getElementById('generate-bill-btn');
 
-    return payload;
-}
-
-function switchTab(tabName) {
-    // Reset active states
-    const add = document.getElementById('tab-add');
-    const check = document.getElementById('tab-check');
-    const add_v = document.getElementById('add-view');
-    const check_v = document.getElementById('check-view');
-
-    add.classList.remove('active');
-    check.classList.remove('active');
-    add_v.style.display = 'none';
-    check_v.style.display = 'none'
-
-
-    // Set new active states
-    if(tabName === 'add') {
-        add.classList.add('active');
-        add_v.style.display = 'block';
-
-    } else if (tabName === 'check') {
-        check.classList.add('active');
-        check_v.style.display = 'block';
-    }
-}
-
-function toggleComposition() {
-    const mode = document.getElementById('entry-mode').value;
-    const compSection = document.getElementById('composition-section');
-    const compInputsDiv = document.getElementById('comp-inputs');
-    
-    const token = localStorage.getItem('token');
-    if (token) {
-        const payload = parseJwt(token);
-
-        if (payload.is_pharmacist === 1 && mode === 'new') {
-            compSection.style.display = 'block';
-            if (compInputsDiv.children.length === 0) {
-                addCompField(); // Add one default empty field
-            }
-        } else {
-            compSection.style.display = 'none';
-            compInputsDiv.innerHTML = ''; // Clear fields if closed
+    // ── FIX A: If the Add button lives inside a <form>, intercept the form's
+    //           submit event so the page never reloads on click.
+    //           e.preventDefault() on the button alone is NOT enough when the
+    //           button has no type="button" attribute in HTML.
+    if (addBtn) {
+        const parentForm = addBtn.closest('form');
+        if (parentForm) {
+            parentForm.addEventListener('submit', (e) => e.preventDefault());
         }
     }
+
+    if (nameInput) {
+        // Typing → debounced search (value captured immediately, not inside timeout)
+        nameInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            const query = nameInput.value;
+            searchTimeout = setTimeout(() => handleProductSearch(query), 300);
+        });
+
+        // Keyboard navigation: Arrow Up/Down, Enter, Tab
+        nameInput.addEventListener('keydown', (e) => {
+            const dropdown = document.getElementById('search-results')
+                || document.getElementById('autocomplete-dropdown');
+            if (!dropdown || dropdown.style.display !== 'block') return;
+
+            const items = dropdown.querySelectorAll('.dropdown-item:not(.no-results)');
+            if (items.length === 0) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                currentFocus++;
+                addActive(items);
+
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                currentFocus--;
+                addActive(items);
+
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                (currentFocus > -1 ? items[currentFocus] : items[0]).click();
+                if (qtyInput) qtyInput.focus();
+
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                (currentFocus > -1 ? items[currentFocus] : items[0]).click();
+                if (qtyInput) qtyInput.focus();
+            }
+        });
+
+        // Close dropdown when clicking outside the search area
+        document.addEventListener('click', (e) => {
+            if (
+                e.target.id !== 'product-name' &&
+                !e.target.closest('#search-results') &&
+                !e.target.closest('#autocomplete-dropdown')
+            ) {
+                closeDropdown();
+            }
+        });
+    }
+
+    // Enter on Qty / Price fields → add item to bill
+    [qtyInput, priceInput].forEach(input => {
+        if (input) {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addItemToBill();
+                    if (nameInput) nameInput.focus();
+                }
+            });
+        }
+    });
+
+    if (addBtn) {
+        addBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            addItemToBill();
+        });
+    }
+
+    if (billBtn) billBtn.addEventListener('click', generateBill);
+});
+
+// ---- Keyboard Navigation Helpers ----
+function addActive(items) {
+    if (!items) return;
+    removeActive(items);
+    if (currentFocus >= items.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = items.length - 1;
+    items[currentFocus].classList.add('autocomplete-active');
+    items[currentFocus].scrollIntoView({ block: 'nearest' });
 }
 
-// 1. Write to Inventory & Composition
-async function submitInventory(e) {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
-    if (!token) { 
-        showMessage('Access Denied: Please login to access.', 'error', 2000); 
-        return; 
+function removeActive(items) {
+    for (let i = 0; i < items.length; i++) {
+        items[i].classList.remove('autocomplete-active');
     }
+}
 
-    const mode = document.getElementById('entry-mode').value;
-    
-    // Collect basic data - sending raw string values directly to Python
-    const inv_data = {
-        Iname: document.getElementById('Iname').value.trim(),
-        Bid: document.getElementById('Bid').value.trim(),
-        Quantity: document.getElementById('Quantity').value,
-        Location: document.getElementById('Location').value.trim(),
-        Purchase_Price: document.getElementById('Purchase_Price').value,
-        Sale_Price: document.getElementById('Sale_Price').value,
-        MRP: document.getElementById('MRP').value,
-        Category: document.getElementById('Category').value.trim(),
-        Exp_Date: document.getElementById('Exp_Date').value
-    };
+// ---- Search & Dropdown Logic ----
+async function handleProductSearch(query) {
+    const dropdown = document.getElementById('search-results')
+        || document.getElementById('autocomplete-dropdown');
 
-    if (parseInt(inv_data.Quantity, 10) <= 0) {
-        showMessage('Quantity must be greater than zero.', 'error', 3000);
-        return; 
-    }
+    currentFocus = -1;
+    if (!dropdown) return;
 
-    const comp_data = {
-        Iname: inv_data.Iname,
-        compositions: []
+    if (query.length < 2) {
+        closeDropdown();
+        return;
     }
 
     try {
-        const response = await fetch('/api/inventory/add', {
+        const response = await fetch(`/api/sales/search?q=${encodeURIComponent(query)}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const result = await response.json();
+        const items = result.data
+            ? result.data
+            : (Array.isArray(result) ? result : []);
+
+        dropdown.innerHTML = '';
+
+        if (items.length > 0) {
+            items.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'dropdown-item';
+                div.textContent = `${item.Iname} (Batch: ${item.Bid}) - Stock: ${item.Quantity}`;
+
+                // mousedown → only prevents blur (keeps dropdown alive until click fires)
+                // click     → actual selection, fires exactly once for both mouse and keyboard
+                div.addEventListener('mousedown', (ev) => ev.preventDefault());
+                div.addEventListener('click', () => selectProduct(item));
+                div.addEventListener('mouseenter', () => {
+                    currentFocus = index;
+                    addActive(dropdown.querySelectorAll('.dropdown-item:not(.no-results)'));
+                });
+
+                dropdown.appendChild(div);
+            });
+            dropdown.style.display = 'block';
+
+        } else {
+            dropdown.innerHTML =
+                '<div class="dropdown-item no-results" ' +
+                'style="color:red;pointer-events:none;">No items found</div>';
+            dropdown.style.display = 'block';
+        }
+
+    } catch (err) {
+        console.error('Search failed:', err);
+    }
+}
+
+// ---- Product Selection ----
+function selectProduct(item) {
+    selectedProduct = item;
+
+    const nameInput = document.getElementById('product-name');
+    const priceInput = document.getElementById('sale-price');
+    const qtyInput = document.getElementById('sale-qty');
+
+    if (nameInput) nameInput.value = `${item.Iname} (Batch: ${item.Bid})`;
+    if (priceInput) priceInput.value = item.Sale_Price;
+    if (qtyInput) {
+        qtyInput.value = 1;
+        qtyInput.max = item.Quantity;
+    }
+
+    const spLabel = document.getElementById('price-sp-label');
+    const mrpLabel = document.getElementById('price-mrp-label');
+    const stockLabel = document.getElementById('price-stock-label');
+    const priceInfo = document.getElementById('price-info');
+
+    if (spLabel) spLabel.textContent = `Sale Price: \u20b9${item.Sale_Price}`;
+    if (mrpLabel) mrpLabel.textContent = `MRP: \u20b9${item.MRP || item.Sale_Price}`;
+    if (stockLabel) stockLabel.textContent = `Stock: ${item.Quantity}`;
+    if (priceInfo) priceInfo.style.display = 'block';
+
+    closeDropdown();
+}
+
+function closeDropdown() {
+    const dropdown = document.getElementById('search-results')
+        || document.getElementById('autocomplete-dropdown');
+    if (dropdown) dropdown.style.display = 'none';
+    currentFocus = -1;
+}
+
+// ---- Bill Management ----
+function addItemToBill() {
+    // Gate 1: a product must be selected from the dropdown
+    if (!selectedProduct) {
+        alert('Please select a product from the search dropdown first.');
+        return;
+    }
+
+    const qtyInput = document.getElementById('sale-qty');
+    const priceInput = document.getElementById('sale-price');
+
+    if (!qtyInput || !priceInput) {
+        alert('Setup error: qty/price inputs not found. Check HTML IDs (sale-qty, sale-price).');
+        return;
+    }
+
+    const qty = parseInt(qtyInput.value, 10);
+    const price = parseFloat(priceInput.value);
+
+    // Gate 2: valid quantity
+    if (isNaN(qty) || qty <= 0) {
+        alert('Please enter a valid quantity greater than 0.');
+        return;
+    }
+    // Gate 3: valid price
+    if (isNaN(price) || price < 0) {
+        alert('Please enter a valid price.');
+        return;
+    }
+
+    // Gate 4: stock check
+    const alreadyAddedQty = billItems
+        .filter(i => i.Bid === selectedProduct.Bid)
+        .reduce((sum, i) => sum + i.quantity, 0);
+    const maxStock = parseInt(selectedProduct.Quantity, 10);
+
+    if ((qty + alreadyAddedQty) > maxStock) {
+        alert(
+            `Insufficient stock! Available: ${maxStock}. ` +
+            `Already in bill: ${alreadyAddedQty}.`
+        );
+        return;
+    }
+
+    // All gates passed — push item to bill array
+    billItems.push({
+        Iname: selectedProduct.Iname,
+        Bid: selectedProduct.Bid,
+        quantity: qty,
+        selling_price: price,
+        mrp: selectedProduct.MRP || price
+    });
+
+    renderBillTable();  // now null-safe (see FIX B below)
+    resetEntryForm();
+}
+
+function removeItemFromBill(index) {
+    billItems.splice(index, 1);
+    renderBillTable();
+}
+
+function renderBillTable() {
+    const tbody = document.getElementById('bill-body');
+    const billBtn = document.getElementById('generate-bill-btn');
+    const totalEl = document.getElementById('grand-total');
+
+    // ── FIX B: THE PRIMARY CRASH — previously there was NO null-check here.
+    //           If the HTML <tbody> was missing id="bill-body", this line:
+    //               tbody.innerHTML = '';
+    //           threw: TypeError: Cannot set properties of null
+    //           That silently killed addItemToBill() mid-execution, so the
+    //           Add button appeared to do absolutely nothing.
+    if (!tbody) {
+        console.error(
+            '[Sales] renderBillTable: element id="bill-body" not found. ' +
+            'Your bill <tbody> must have id="bill-body".'
+        );
+        return; // exit cleanly instead of crashing
+    }
+
+    tbody.innerHTML = '';
+
+    if (billItems.length === 0) {
+        if (billBtn) billBtn.disabled = true;
+        if (totalEl) totalEl.textContent = '\u20b90.00';
+        return;
+    }
+
+    if (billBtn) billBtn.disabled = false;
+
+    let grandTotal = 0;
+    billItems.forEach((item, index) => {
+        const lineTotal = item.selling_price * item.quantity;
+        grandTotal += lineTotal;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${item.Iname}</td>
+            <td>${item.Bid}</td>
+            <td>${item.quantity}</td>
+            <td>\u20b9${parseFloat(item.selling_price).toFixed(2)}</td>
+            <td>\u20b9${lineTotal.toFixed(2)}</td>
+            <td>
+                <button class="btn-remove-item"
+                        onclick="removeItemFromBill(${index})">&#x2715;</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    if (totalEl) totalEl.textContent = `\u20b9${grandTotal.toFixed(2)}`;
+}
+
+function resetEntryForm() {
+    const nameInput = document.getElementById('product-name');
+    const qtyInput = document.getElementById('sale-qty');
+    const priceInput = document.getElementById('sale-price');
+
+    if (nameInput) nameInput.value = '';
+    if (qtyInput) qtyInput.value = '1';
+    if (priceInput) priceInput.value = '';
+
+    selectedProduct = null;
+    currentFocus = -1;
+
+    const spLabel = document.getElementById('price-sp-label');
+    const mrpLabel = document.getElementById('price-mrp-label');
+    const stockLabel = document.getElementById('price-stock-label');
+    const priceInfo = document.getElementById('price-info');
+
+    if (spLabel) spLabel.textContent = 'Sale Price: \u2014';
+    if (mrpLabel) mrpLabel.textContent = 'MRP: \u2014';
+    if (stockLabel) stockLabel.textContent = 'Stock: \u2014';
+    if (priceInfo) priceInfo.style.display = 'none';
+}
+
+// ---- Generate Bill API Call ----
+async function generateBill() {
+    if (billItems.length === 0) {
+        alert('No items in the bill.');
+        return;
+    }
+
+    const billBtn = document.getElementById('generate-bill-btn');
+    if (billBtn) {
+        billBtn.disabled = true;
+        billBtn.textContent = 'Processing...';
+    }
+
+    try {
+        const response = await fetch('/api/sales/generate-bill', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
-            body: JSON.stringify(inv_data)
+            body: JSON.stringify({
+                items: billItems.map(item => ({
+                    Bid: item.Bid,
+                    quantity: item.quantity,
+                    selling_price: item.selling_price
+                }))
+            })
         });
 
         const result = await response.json();
+
         if (response.ok) {
-            showMessage('Inventory saved successfully', 'success');
-            document.getElementById('add-inventory-form').reset();
-            toggleComposition(); 
+            alert('Bill generated successfully!');
+            billItems = [];
+            renderBillTable();
+            resetEntryForm();
         } else {
-            const errorMsg = result.error?.message || result.error || 'Unknown error';
-            showMessage(errorMsg, 'error');
+            alert(result.error || 'Failed to generate bill.');
         }
 
     } catch (error) {
-        console.error('Submission failed', error);
-        showMessage(error.message, 'error');
-    }
+        console.error('Bill generation error:', error);
+        alert('Network error. Please try again.');
 
-    // Collect composition data if applicable
-    const payload = parseJwt(token);
-    if (payload && payload.is_pharmacist === 1 && mode === 'new') {
-        const compInputs = document.querySelectorAll('.comp-input');
-        compInputs.forEach(input => {
-            if (input.value.trim() !== '') {
-                comp_data.compositions.push(input.value.trim());
-            }
-        });
-
-        if (comp_data.compositions.length > 0) {
-            try {
-                const comp_response = await fetch('/api/inventory/composition', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(comp_data)
-                });
-
-                const comp_result = await comp_response.json();
-                if (comp_response.ok) {
-                    showMessage('Composition saved successfully', 'success');
-                } else {
-                    const errorMsg = comp_result.error?.message || comp_result.error || 'Unknown error';
-                    showMessage(errorMsg, 'error');
-                    return;
-                }
-            }
-            catch (error) {
-                console.error('Submission failed', error);
-                showMessage(error.message, 'error');
-                return;
-            }
+    } finally {
+        if (billBtn) {
+            billBtn.disabled = billItems.length === 0;
+            billBtn.textContent = 'Generate Bill';
         }
     }
-}
-
-function addCompField() {
-    const div = document.createElement('div');
-    div.className = 'comp-input-row';
-    div.innerHTML = `
-        <input type="text" class="comp-input" required>
-        <button type="button" class="btn-remove" onclick="this.parentElement.remove()">x</button>
-    `;
-    document.getElementById('comp-inputs').appendChild(div);
-}
-
-//Check Status and Display Table
-async function checkInventoryStatus(e) {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
-    const searchItem = document.getElementById('search_item').value;
-
-    try {
-        const response = await fetch(`/api/inventory/check?iname=${encodeURIComponent(searchItem)}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        const result = await response.json();
-        if (response.ok) {
-            renderTable(result.data, result.is_pharmacist);
-        } else {
-            alert('Error: ' + result.error);
-            showMessage('Error: ' + result.error, 'error');
-        }
-    } catch (error) {
-        console.error('Fetch failed', error);
-        showMessage(error.message, 'error');
-    }
-}
-
-function renderTable(data, isPharmacist) {
-    const resultsBox = document.getElementById('status-results');
-    const tHead = document.getElementById('results-head');
-    const tBody = document.getElementById('results-body');
-    
-    resultsBox.style.display = 'block';
-    tHead.innerHTML = '';
-    tBody.innerHTML = '';
-
-    if (data.length === 0) {
-        // Increased colspan to 11 to cover the max possible columns
-        tBody.innerHTML = '<tr><td colspan="11" style="text-align:center;">No records found.</td></tr>';
-        return;
-    }
-
-    // Set Headers dynamically based on pharmacist role
-    let headers = [
-        'Item Name', 'Batch ID', 'Quantity', 'Purchase Price', 
-        'Sale Price', 'MRP', 'Exp Date', 'Purchase Date', 
-        'Category', 'Location'
-    ];
-    if (isPharmacist) headers.push('Composition');
-    
-    headers.forEach(text => {
-        let th = document.createElement('th');
-        th.textContent = text;
-        tHead.appendChild(th);
-    });
-
-    // Populate Rows
-    data.forEach(row => {
-        let tr = document.createElement('tr');
-        
-        // Formatted to exactly match the header array order
-        tr.innerHTML = `
-            <td>${row.Iname || 'N/A'}</td>
-            <td>${row.Bid || 'N/A'}</td>
-            <td>${row.Quantity || 0}</td>
-            <td>${row.Purchase_Price || 'N/A'}</td>
-            <td>${row.Sale_Price || 'N/A'}</td>
-            <td>${row.MRP || 'N/A'}</td>
-            <td>${row.Exp_Date ? new Date(row.Exp_Date).toLocaleDateString() : 'N/A'}</td>
-            <td>${row.Purchase_Date ? new Date(row.Purchase_Date).toLocaleDateString() : 'N/A'}</td>
-            <td>${row.Category || 'N/A'}</td>
-            <td>${row.Location || 'N/A'}</td>
-        `;
-
-        if (isPharmacist) {
-            let compDisplay = row.components || 'N/A';
-            tr.innerHTML += `<td>${compDisplay}</td>`;
-        }
-        
-        tBody.appendChild(tr);
-    });
 }
