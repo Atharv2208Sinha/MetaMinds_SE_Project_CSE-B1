@@ -285,6 +285,151 @@ def expiryAlert(current_user_id, cursor, conn):
     return cursor.fetchall()
 
 
+@app.route('/Inventory_Management')
+def salesMgmt():
+    return render_template('inventory_management.html')
+
+@app.route('/api/inventory/composition', methods=['POST'])
+@token_required
+def add_composition(current_user_id):
+    data = request.json
+    
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        if conn is None:
+            return jsonify({'error': 'Database connection failed'}), 500
+            
+        cursor = conn.cursor()
+    
+        table_comp = f"composition_{current_user_id}"
+        compositions = data.get('compositions', [])
+        
+        for component in compositions:
+            comp_query = f"INSERT IGNORE INTO {table_comp} (Iname, component) VALUES (%s, %s)"
+            cursor.execute(comp_query, (data['Iname'], component))
+
+        conn.commit()
+        return jsonify({'message': 'Composition saved successfully'}), 200
+
+    except Error as e:
+        if conn: conn.rollback()
+        print(f"Database error: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+@app.route('/api/inventory/add', methods=['POST'])
+@token_required
+def add_inventory(current_user_id):
+    data = request.json
+    
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        if conn is None:
+            return jsonify({'error': 'Database connection failed'}), 500
+            
+        cursor = conn.cursor()
+        table_inv = f"inventory_{current_user_id}"
+        
+        # Current Date for Purchase_Date
+        current_date = datetime.now().strftime('%Y-%m-%d')
+
+        mrp_val = data.get('MRP')
+        if mrp_val in [-1, "-1", "", "NULL"]: 
+            mrp_val = None
+            
+        location_val = data.get('Location')
+        if location_val in ["", "NULL"]:
+            location_val = None
+            
+        category_val = data.get('Category')
+        if category_val in ["", "NULL"]:
+            category_val = None
+        
+        query = f"""INSERT INTO {table_inv} 
+                    (Iname, Bid, Quantity, Purchase_Price, Sale_Price, MRP, Exp_Date, Purchase_Date, Location, Category) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        
+        cursor.execute(query, (
+            data['Iname'], data['Bid'], data['Quantity'], data['Purchase_Price'], 
+            data['Sale_Price'], mrp_val, data['Exp_Date'], current_date, 
+            location_val, category_val
+        ))
+        
+        conn.commit()
+
+        handleLow(data['Iname'], current_user_id, cursor, conn)
+        return jsonify({'message': 'Inventory saved successfully'}), 200
+
+    except Error as e:
+        if conn: conn.rollback()
+        print(f"Database error: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+
+def handleLow(Iname, Uid, cursor, conn):
+    qinv = f"""Delete from inventory_{Uid} where Iname = %s and Quantity <= 0"""
+    cursor.execute(qinv, (Iname,))
+
+    qread = f"Delete from read_{Uid} where Iname_Bid = %s and type = 'L'"
+    cursor.execute(qread, (Iname,))
+    conn.commit
+
+
+@app.route('/api/inventory/check', methods=['GET'])
+@token_required
+def check_inventory(current_user_id, is_pharmacist):
+    search_iname = request.args.get('iname', '')
+    
+    if not search_iname:
+        return jsonify({'error': 'Item name required'}), 400
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        if conn is None: return jsonify({'error': 'Database error'}), 500
+        
+        cursor = conn.cursor(dictionary=True)
+        table_inv = f"inventory_{current_user_id}"
+        
+        if is_pharmacist == 1:
+            table_comp = f"composition_{current_user_id}"
+            
+            query = f"""
+                SELECT i.*, GROUP_CONCAT(c.component SEPARATOR '; ') as components 
+                FROM {table_inv} i
+                LEFT JOIN {table_comp} c ON i.Iname = c.Iname
+                WHERE i.Iname LIKE %s
+                GROUP BY i.Bid
+            """
+        else:
+            query = f"SELECT * FROM {table_inv} WHERE Iname LIKE %s"
+            
+        cursor.execute(query, (f"%{search_iname}%",))
+        results = cursor.fetchall()
+        
+        return jsonify({
+            'data': results,
+            'is_pharmacist': bool(is_pharmacist)
+        }), 200
+
+    except Error as e:
+        print(f"Database error: {e}")
+        return jsonify({'error': 'Failed to fetch status'}), 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+
 if __name__ == '__main__':
     app.run(debug=True,port=5500)
 
