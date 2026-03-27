@@ -8,16 +8,6 @@
     text-align: center;
     margin: 0 auto;
 }
-.title_h1{
-    font-size: 3em;
-    color: black;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    width: 90vw;
-    margin: 0 auto;
-}
 
 /* Input Group Styling */
 .register-group {
