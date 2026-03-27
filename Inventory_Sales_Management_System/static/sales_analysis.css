@@ -1,0 +1,45 @@
+/* Container sizing and centering */
+.analysis-container {
+    width: 90vw;
+    margin: 20px auto;
+    font-family: inherit;
+}
+
+/* Tab Layout mimicking a file folder layout */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-left: 20px; /* Slight indent like the sketch */
+}
+
+.tab-btn {
+    padding: 12px 25px;
+    border: 2px solid black;
+    border-bottom: none; /* Merges with the border below */
+    background-color: #d3d3d3;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: background-color 0.2s;
+}
+
+.tab-btn:hover {
+    background-color: #e2e2e2;
+}
+
+.tab-btn.active {
+    background-color: #9f9f9f; /* Matches body background */
+    color: black;
+    position: relative;
+    top: 2px; /* Pull down slightly to cover the form border */
+}
+
+/* Form Area Box */
+.form-area {
+    border: 2px solid black;
+    padding: 30px;
+    background-color: transparent; /* Maintains global theme */
+    border-radius: 0 8px 8px 8px; /* Smooth corners except top-left */
+}
