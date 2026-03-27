@@ -39,5 +39,14 @@ This project provides a simple, efficient, and reliable software solution for ma
 - View analytics on the "Analytics" page.
 
 ### Test Ids
+ID:1
+
 - email : a@gmail.com
 - password : As2208##
+- User type : Retail Shopkeeper
+
+Id:2
+- email : d@gmail.com
+- password : As2208##
+- User type : Pharmacist
+
