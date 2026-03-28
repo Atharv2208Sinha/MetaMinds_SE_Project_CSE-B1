@@ -174,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    let allSalesData = [];
     if(statementForm) {
         statementForm.addEventListener('submit', (e) => {
             e.preventDefault(); // Prevent page reload
@@ -191,18 +192,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? `${monthSelect.options[monthSelect.selectedIndex].text} ${yearInput.value}`
                 : 'Selected Duration';
             
-            // Placeholder simulation of setting fetched data in the Duration table
+
             document.getElementById('summary-duration-text').innerText = durationText;
+            allSalesData = getItemsSaleData(monthSelect.value, yearInput.value);
+            const summarySoldQty = allSalesData.reduce((sum, item) => sum + (item.sold ? item.quantity : 0), 0);
+            const summarySoldInc = allSalesData.reduce((sum, item) => sum + (item.sold ? item.income : 0), 0);
+            const summarySoldExp = allSalesData.reduce((sum, item) => sum + (item.sold ? item.expenditure : 0), 0);
+            const summarySoldTotal = summarySoldInc - summarySoldExp;
+
+            const summaryDiscQty = allSalesData.reduce((sum, item) => sum + (item.sold ? 0 : item.quantity), 0);
+            const summaryDiscExp = allSalesData.reduce((sum, item) => sum + (item.sold ? 0 : item.expenditure), 0);
+            const summaryNetTotal = summarySoldTotal - summaryDiscExp;
             
-            document.getElementById('summary-sold-qty').innerText = '500';
-            document.getElementById('summary-sold-inc').innerText = '₹ 1,25,000';
-            document.getElementById('summary-sold-total').innerText = '₹ 1,25,000';
+            document.getElementById('summary-sold-qty').innerText = `${summarySoldQty}`;
+            document.getElementById('summary-sold-inc').innerText = `₹ ${summarySoldInc.toLocaleString()}`;
+            document.getElementById('summary-sold-total').innerText = `₹ ${summarySoldTotal.toLocaleString()}`;
+            document.getElementById('summary-sold-exp').innerText = `₹ ${summarySoldExp.toLocaleString()}`;
+            document.getElementById('summary-disc-qty').innerText = `${summaryDiscQty}`;
+            document.getElementById('summary-disc-exp').innerText = `₹ ${summaryDiscExp.toLocaleString()}`;
+            document.getElementById('summary-disc-total').innerText = `-₹ ${summaryDiscExp.toLocaleString()}`;
             
-            document.getElementById('summary-disc-qty').innerText = '50';
-            document.getElementById('summary-disc-exp').innerText = '₹ 80,000';
-            document.getElementById('summary-disc-total').innerText = '-₹ 80,000';
-            
-            document.getElementById('summary-net-total').innerText = '₹ 45,000';
+            document.getElementById('summary-net-total').innerText = `₹ ${summaryNetTotal.toLocaleString()}`;
+
+            // Handle Detailed Statement Item Filtering
+            const detailedItemFilter = document.getElementById('detailed-item-filter');
+            if (detailedItemFilter) {
+                detailedItemFilter.innerHTML = '<option value="all">All Items</option>'; // Reset and add 'All Items'
+                const uniqueItems = [...new Map(allSalesData.map(item => [item.batch_id, item])).values()];
+                uniqueItems.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.batch_id;
+                    option.textContent = item.item_name;
+                    detailedItemFilter.appendChild(option);
+                });
+
+                detailedItemFilter.addEventListener('change', (e) => {
+                    renderDetailedStatement(allSalesData, e.target.value);
+                });
+
+                // Initial render for "All Items"
+                renderDetailedStatement(allSalesData, 'all');
+            }
         });
     }
 
@@ -224,23 +254,70 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle Detailed Statement Item Filtering
-    const detailedItemFilter = document.getElementById('detailed-item-filter');
-    if (detailedItemFilter) {
-        detailedItemFilter.addEventListener('change', (e) => {
-            const selectedItem = e.target.value;
-            const itemGroups = document.querySelectorAll('.detailed-item-group');
-            
-            itemGroups.forEach(group => {
-                if (selectedItem === 'all' || group.getAttribute('data-item') === selectedItem) {
-                    group.style.display = ''; // Show this item's body
-                } else {
-                    group.style.display = 'none'; // Hide this item's body
-                }
-            });
-        });
-    }
 });
+
+function renderDetailedStatement(salesData, selectedBatchId) {
+    const itemGroup = document.getElementById('detailed-statement-table');
+
+    const existingRows = itemGroup.querySelectorAll('tbody');
+    existingRows.forEach(row => row.remove());
+    const filteredData = selectedBatchId === 'all' 
+        ? salesData 
+        : salesData.filter(item => item.batch_id === selectedBatchId);
+
+    // Group by item_name to handle sold and discarded states for the same item
+    const itemsByName = filteredData.reduce((acc, item) => {
+        if (!acc[item.item_name]) {
+            acc[item.item_name] = {
+                sold_qty: 0,
+                sold_exp: 0,
+                sold_inc: 0,
+                disc_qty: 0,
+                disc_exp: 0,
+            };
+        }
+
+        if (item.sold) {
+            acc[item.item_name].sold_qty += item.quantity;
+            acc[item.item_name].sold_exp += item.expenditure;
+            acc[item.item_name].sold_inc += item.income;
+        } else {
+            acc[item.item_name].disc_qty += item.quantity;
+            acc[item.item_name].disc_exp += item.expenditure;
+        }
+        
+        return acc;
+    }, {});
+
+    for (const itemName in itemsByName) {
+        const item = itemsByName[itemName];
+        const soldTotal = item.sold_inc - item.sold_exp;
+        const netTotal = soldTotal - item.disc_exp;
+
+        const row = document.createElement('tbody');
+        row.classList.add('detailed-item-group');
+        row.dataset.itemName = itemName;
+        row.innerHTML = `
+            <tr>
+                <td rowspan="2">${itemName}</td>
+                <td>Sold</td>
+                <td>${item.sold_qty}</td>
+                <td>₹ ${item.sold_exp.toLocaleString()}</td>
+                <td>₹ ${item.sold_inc.toLocaleString()}</td>
+                <td style="color: #28a745; font-weight:bold;">₹ ${soldTotal.toLocaleString()}</td>
+                <td rowspan="2">₹ ${netTotal.toLocaleString()}</td>
+            </tr>
+            <tr>
+                <td>Discarded</td>
+                <td>${item.disc_qty}</td>
+                <td>₹ ${item.disc_exp.toLocaleString()}</td>
+                <td>-</td>
+                <td style="color: #dc3545; font-weight:bold;">-₹ ${item.disc_exp.toLocaleString()}</td>
+            </tr>
+        `;
+        itemGroup.appendChild(row);
+    }
+}
 
 function switchTab(tabName) {
     // Reset active states
@@ -333,5 +410,34 @@ function getAllItems(){
             batch_id: 'BATCH002',
             item_name: 'Item B',    
         },
+    ]
+}
+
+function getItemsSaleData(month, year){
+    //TODO: Implement functionality to fetch item sale data for a specific month and year
+    //Output: [{batch_id: 'BATCH001', item_name: 'Item A', month: 'Jan', year: 2023, sold: 1 || 0,  quantity: 100, expenditure: 500, income: 1000},...]
+
+    //dummy data
+    return [
+        {
+            batch_id: 'BATCH001',
+            item_name: 'Item A',
+            month: 'Jan',
+            year: 2023,
+            sold: 1,
+            quantity: 100,
+            expenditure: 500,
+            income: 1000
+        },
+        {
+            batch_id: 'BATCH002',
+            item_name: 'Item B',
+            month: 'Jan',
+            year: 2023,
+            sold: 0,
+            quantity: 150,
+            expenditure: 750,
+            income: 1500
+        }
     ]
 }

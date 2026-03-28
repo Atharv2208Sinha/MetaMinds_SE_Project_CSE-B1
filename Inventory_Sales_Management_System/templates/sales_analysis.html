@@ -241,7 +241,7 @@
                                         <td rowspan="2" id="summary-duration-text">Month/Year</td>
                                         <td>Sold</td>
                                         <td id="summary-sold-qty">0</td>
-                                        <td id="summary-sold-exp">-</td>
+                                        <td id="summary-sold-exp" style="color: #dc3545; font-weight:bold;">-</td>
                                         <td id="summary-sold-inc" style="color: #28a745; font-weight:bold;">₹ 0</td>
                                         <td id="summary-sold-total" style="color: #28a745; font-weight:bold;">₹ 0</td>
                                         <td rowspan="2" id="summary-net-total" style="font-weight:bold;">₹ 0</td>
@@ -264,13 +264,11 @@
                                 <label for="detailed-item-filter">Filter by Item:</label>
                                 <select id="detailed-item-filter">
                                     <option value="all">All Items</option>
-                                    <option value="Paracetamol">Paracetamol</option>
-                                    <option value="Amoxicillin">Amoxicillin</option>
                                 </select>
                             </div>
                         </div>
                         <div class="detailed-statement-container">
-                            <table class="statement-table">
+                            <table class="statement-table" id="detailed-statement-table">
                                 <thead>
                                     <tr>
                                         <th>Item</th>
@@ -282,43 +280,6 @@
                                         <th>Net Total</th>
                                     </tr>
                                 </thead>
-                                <!-- Group rows by tbody for easy filtering -->
-                                <tbody class="detailed-item-group" data-item="Paracetamol">
-                                    <tr>
-                                        <td rowspan="2">Paracetamol</td>
-                                        <td>Sold</td>
-                                        <td>500</td>
-                                        <td>-</td>
-                                        <td>₹ 5,000</td>
-                                        <td style="color: #28a745; font-weight:bold;">₹ 5,000</td>
-                                        <td rowspan="2">₹ 4,500</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Discarded</td>
-                                        <td>50</td>
-                                        <td>₹ 500</td>
-                                        <td>-</td>
-                                        <td style="color: #dc3545; font-weight:bold;">-₹ 500</td>
-                                    </tr>
-                                </tbody>
-                                <tbody class="detailed-item-group" data-item="Amoxicillin">
-                                    <tr>
-                                        <td rowspan="2">Amoxicillin</td>
-                                        <td>Sold</td>
-                                        <td>300</td>
-                                        <td>-</td>
-                                        <td>₹ 9,000</td>
-                                        <td style="color: #28a745; font-weight:bold;">₹ 9,000</td>
-                                        <td rowspan="2">₹ 8,100</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Discarded</td>
-                                        <td>30</td>
-                                        <td>₹ 900</td>
-                                        <td>-</td>
-                                        <td style="color: #dc3545; font-weight:bold;">-₹ 900</td>
-                                    </tr>
-                                </tbody>
                             </table>
                         </div>
 
