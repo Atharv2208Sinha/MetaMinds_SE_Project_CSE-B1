@@ -365,79 +365,110 @@ function switchTab(tabName) {
     }
 }
 
-function getMonthlySalesData(year) {
-    //TODO: fetch data from server
-    //Output: [{month: sales}, {month: sales}, ...]
-    //Example: [ { Jan: 12000 }, { Feb: 15000 }, ...]
+async function getMonthlySalesData(year) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('You are not logged in!');
+        return [];
+    }
 
-    //dummy data
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const salesData = {};
-    months.forEach(month => {
-        salesData[month] = Math.floor(Math.random() * 15000) + 5000; // Random sales between 5000 and 20000
-    });
-    return salesData;
-}
+    try {
+        const response = await fetch(`/api/sales/monthly/${year}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
-function getYearlySalesData(startYear, endYear) {
-    //TODO: fetch data from server
-    //Output: {year: sales, year: sales, ...}
-    //Example: { 2020: 150000, 2021: 200000,} 
-
-    //dummy data 
-    const yearsCount = endYear - startYear + 1;
-    let salesData = {};
-    const sales = Array.from({ length: yearsCount }, () => Math.floor(Math.random() * 400000) + 100000);
-    sales.map((sale, index) => {
-        const year = startYear + index;
-        salesData[year] = sale;
-    });
-    console.log('salesData', salesData);
-    return salesData;
-}
-
-function getAllItems(){
-    //TODO: Implement functionality to fetch all items
-    //Output: [{batch_id: 'BATCH001', item_name: 'Item A'}, {batch_id: 'BATCH002', item_name: 'Item B'}, ...]
-
-    //dummy data 
-    return [
-        {
-            batch_id: 'BATCH001',
-            item_name: 'Item A',
-        },
-        {
-            batch_id: 'BATCH002',
-            item_name: 'Item B',    
-        },
-    ]
-}
-
-function getItemsSaleData(month, year){
-    //TODO: Implement functionality to fetch item sale data for a specific month and year
-    //Output: [{batch_id: 'BATCH001', item_name: 'Item A', month: 'Jan', year: 2023, sold: 1 || 0,  quantity: 100, expenditure: 500, income: 1000},...]
-
-    //dummy data
-    return [
-        {
-            batch_id: 'BATCH001',
-            item_name: 'Item A',
-            month: 'Jan',
-            year: 2023,
-            sold: 1,
-            quantity: 100,
-            expenditure: 500,
-            income: 1000
-        },
-        {
-            batch_id: 'BATCH002',
-            item_name: 'Item B',
-            month: 'Jan',
-            year: 2023,
-            sold: 0,
-            quantity: 150,
-            expenditure: 750,
-            income: 1500
+        if (!response.ok) {
+            throw new Error('Failed to fetch monthly sales data');
         }
-    ]
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching monthly sales data:', error);
+        return [];
+    }
+}
+
+async function getYearlySalesData(startYear, endYear) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('You are not logged in!');
+        return [];
+    }
+
+    try {
+        const response = await fetch(`/api/sales/yearly/${startYear}/${endYear}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch yearly sales data');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching yearly sales data:', error);
+        return [];
+    }
+}
+
+async function getAllItems() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('You are not logged in!');
+        return [];
+    }
+
+    try {
+        const response = await fetch('/api/inventory/all_items', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch items');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching items:', error);
+        return [];
+    }
+}
+
+async function getItemsSaleData(month, year) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('You are not logged in!');
+        return [];
+    }
+
+    try {
+        const response = await fetch(`/api/sales/item_sales/${month}/${year}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch item sales data');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching item sales data:', error);
+        return [];
+    }
 }

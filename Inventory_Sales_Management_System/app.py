@@ -293,8 +293,141 @@ def salesMgmt():
 def salesAnalysis():
     return render_template('sales_analysis.html')
 
+@app.route('/api/sales/monthly/<int:year>', methods=['GET'])
+@token_required
+def get_monthly_sales(current_user_id, is_pharmacist, year):
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        if conn is None:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cursor = conn.cursor(dictionary=True)
+        
+        query = f"""
+            SELECT Month, SUM(Quantity) as total_sales
+            FROM sales_{current_user_id}
+            WHERE Year = %s AND Sold = 1
+            GROUP BY Month
+            ORDER BY Month;
+        """
+        cursor.execute(query, (year,))
+        sales_data = cursor.fetchall()
+        
+        # Initialize sales for all months to 0
+        monthly_sales = {month: 0 for month in range(1, 13)}
+        for row in sales_data:
+            monthly_sales[row['Month']] = row['total_sales']
+            
+        return jsonify(list(monthly_sales.values()))
+
+    except Error as e:
+        print(f"Database error: {e}")
+        return jsonify({'error': 'An internal error occurred.'}), 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+@app.route('/api/sales/yearly/<int:start_year>/<int:end_year>', methods=['GET'])
+@token_required
+def get_yearly_sales(current_user_id, is_pharmacist, start_year, end_year):
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        if conn is None:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cursor = conn.cursor(dictionary=True)
+        
+        query = f"""
+            SELECT Year, SUM(Quantity) as total_sales
+            FROM sales_{current_user_id}
+            WHERE Year BETWEEN %s AND %s AND Sold = 1
+            GROUP BY Year
+            ORDER BY Year;
+        """
+        cursor.execute(query, (start_year, end_year))
+        sales_data = cursor.fetchall()
+
+        # Initialize sales for all years in the range to 0
+        yearly_sales = {year: 0 for year in range(start_year, end_year + 1)}
+        for row in sales_data:
+            yearly_sales[row['Year']] = row['total_sales']
+            
+        return jsonify(list(yearly_sales.values()))
+
+    except Error as e:
+        print(f"Database error: {e}")
+        return jsonify({'error': 'An internal error occurred.'}), 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+@app.route('/api/inventory/all_items', methods=['GET'])
+@token_required
+def get_all_items(current_user_id, is_pharmacist):
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        if conn is None:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cursor = conn.cursor(dictionary=True)
+        
+        query = f"SELECT Bid as batch_id, Iname as item_name FROM inventory_{current_user_id};"
+        cursor.execute(query)
+        items = cursor.fetchall()
+        
+        return jsonify(items)
+
+    except Error as e:
+        print(f"Database error: {e}")
+        return jsonify({'error': 'An internal error occurred.'}), 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+@app.route('/api/sales/item_sales/<int:month>/<int:year>', methods=['GET'])
+@token_required
+def get_item_sales_data(current_user_id, is_pharmacist, month, year):
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        if conn is None:
+            return jsonify({'error': 'Database connection failed'}), 500
+        
+        cursor = conn.cursor(dictionary=True)
+        
+        query = f"""
+            SELECT 
+                s.Bid as batch_id,
+                i.Iname as item_name,
+                s.Month as month,
+                s.Year as year,
+                s.Sold as sold,
+                s.Quantity as quantity,
+                s.Expenditure as expenditure,
+                s.Income as income
+            FROM sales_{current_user_id} s
+            JOIN inventory_{current_user_id} i ON s.Bid = i.Bid
+            WHERE s.Month = %s AND s.Year = %s;
+        """
+        cursor.execute(query, (month, year))
+        items = cursor.fetchall()
+        
+        return jsonify(items)
+
+    except Error as e:
+        print(f"Database error: {e}")
+        return jsonify({'error': 'An internal error occurred.'}), 500
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+
 if __name__ == '__main__':
-    app.run(debug=True,port=5500)
-
-
-    
+    app.run(debug=True, port=5500)
