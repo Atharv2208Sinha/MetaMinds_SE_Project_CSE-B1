@@ -296,6 +296,7 @@ def salesAnalysis():
 @app.route('/api/sales/monthly/<int:year>', methods=['GET'])
 @token_required
 def get_monthly_sales(current_user_id, is_pharmacist, year):
+    item_id = request.args.get('item_id')  # Get item_id from query parameters
     conn = None
     cursor = None
     try:
@@ -306,13 +307,22 @@ def get_monthly_sales(current_user_id, is_pharmacist, year):
         cursor = conn.cursor(dictionary=True)
         
         query = f"""
-            SELECT Month, SUM(Quantity) as total_sales
-            FROM sales_{current_user_id}
-            WHERE Year = %s AND Sold = 1
-            GROUP BY Month
-            ORDER BY Month;
+            SELECT 
+                s.Month, 
+                SUM(s.Quantity) as total_sales
+            FROM sales_{current_user_id} s
+            JOIN inventory_{current_user_id} i ON s.Bid = i.Bid
+            WHERE s.Year = %s AND s.Sold = 1
         """
-        cursor.execute(query, (year,))
+        
+        params = [year]
+        if item_id and item_id != 'overall':
+            query += " AND i.Bid = %s"
+            params.append(item_id)
+            
+        query += " GROUP BY s.Month ORDER BY s.Month;"
+        
+        cursor.execute(query, tuple(params))
         sales_data = cursor.fetchall()
         
         # Initialize sales for all months to 0
@@ -332,6 +342,7 @@ def get_monthly_sales(current_user_id, is_pharmacist, year):
 @app.route('/api/sales/yearly/<int:start_year>/<int:end_year>', methods=['GET'])
 @token_required
 def get_yearly_sales(current_user_id, is_pharmacist, start_year, end_year):
+    item_id = request.args.get('item_id')  # Get item_id from query parameters
     conn = None
     cursor = None
     try:
@@ -342,13 +353,22 @@ def get_yearly_sales(current_user_id, is_pharmacist, start_year, end_year):
         cursor = conn.cursor(dictionary=True)
         
         query = f"""
-            SELECT Year, SUM(Quantity) as total_sales
-            FROM sales_{current_user_id}
-            WHERE Year BETWEEN %s AND %s AND Sold = 1
-            GROUP BY Year
-            ORDER BY Year;
+            SELECT 
+                s.Year, 
+                SUM(s.Quantity) as total_sales
+            FROM sales_{current_user_id} s
+            JOIN inventory_{current_user_id} i ON s.Bid = i.Bid
+            WHERE s.Year BETWEEN %s AND %s AND s.Sold = 1
         """
-        cursor.execute(query, (start_year, end_year))
+        
+        params = [start_year, end_year]
+        if item_id and item_id != 'overall':
+            query += " AND i.Bid = %s"
+            params.append(item_id)
+            
+        query += " GROUP BY s.Year ORDER BY s.Year;"
+        
+        cursor.execute(query, tuple(params))
         sales_data = cursor.fetchall()
 
         # Initialize sales for all years in the range to 0

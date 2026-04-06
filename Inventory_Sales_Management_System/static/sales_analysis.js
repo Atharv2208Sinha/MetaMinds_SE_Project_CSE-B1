@@ -365,7 +365,7 @@ function switchTab(tabName) {
     }
 }
 
-async function getMonthlySalesData(year) {
+async function getMonthlySalesData(year, itemId = 'overall') {
     const token = localStorage.getItem('token');
     if (!token) {
         alert('You are not logged in!');
@@ -373,7 +373,7 @@ async function getMonthlySalesData(year) {
     }
 
     try {
-        const response = await fetch(`/api/sales/monthly/${year}`, {
+        const response = await fetch(`/api/sales/monthly/${year}?item_id=${itemId}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -392,7 +392,7 @@ async function getMonthlySalesData(year) {
     }
 }
 
-async function getYearlySalesData(startYear, endYear) {
+async function getYearlySalesData(startYear, endYear, itemId = 'overall') {
     const token = localStorage.getItem('token');
     if (!token) {
         alert('You are not logged in!');
@@ -400,7 +400,7 @@ async function getYearlySalesData(startYear, endYear) {
     }
 
     try {
-        const response = await fetch(`/api/sales/yearly/${startYear}/${endYear}`, {
+        const response = await fetch(`/api/sales/yearly/${startYear}/${endYear}?item_id=${itemId}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
