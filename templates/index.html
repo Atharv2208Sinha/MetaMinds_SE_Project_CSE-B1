@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Alternative Medicine Advisor</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <link rel="stylesheet" href="/static/alt_med_advisor.css">
+    </head>
+    <body>
+        <header id="non-user">
+            <nav>
+                <div class="nav-left">
+                    <a href="Home" class="logo">Vendora</a>
+                </div>
+
+                <div class="nav-right">
+                    <a href="Sign_Up" class="btn btn-signup" id="signup-btn">Sign Up</a>
+                    <a href="#" class="btn btn-login" id="user-action-btn">Login</a>
+
+                    <div id="loginModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="modal-close-btn">&times;</span>
+                                
+                            <form class="login-form" id="login-modal-form"> 
+                                <h2 style="color: black;">Welcome Back!</h2>
+
+                                <div class="input-group">
+                                    <input type="email" id="login-email" required placeholder="--------@-------">
+                                    <label for="login-phone">Email Id</label> </div>
+
+                                <div class="input-group">
+                                    <input type="password" id="login-password" placeholder="••••••••" required>
+                                    <label for="login-password">Password</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-submit">Login</button>
+                                    
+                                <p class="signup-prompt">
+                                    Don't have an account? 
+                                    <a href="Sign_Up">Sign Up</a> 
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <header id="user"style="display: none;">
+            <nav>
+                <div class="nav-left">
+                    <div class="hamburger" id="hamburger-btn">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <a href="Main" class="logo">Vendora</a>
+                    <ul class="nav-links">
+                        <li><a href="Inventory_Management" target="_self">Inventory Management</a></li>
+                        <li><a href="Sales_Management" target="_self">Sales Management</a></li>
+                        <li><a href="Sales_Analysis" target="_self">Sales Analysis</a></li>
+                        <li id="alt-med" style="display: none;"><a href="Alternative_Medicine_Advisor" target="_self">Alternative Medicine Advisor</a></li>
+                        <li><a href="Home" target="_self">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-right">
+                    <div class="notification-wrapper" style="position: relative; cursor: pointer;">
+                        <a href="#" id="notification-btn" class="notification-link">
+                            <img src="/static/Notification_icon.png" alt="Notification">
+                        </a>
+                        <span id="notification-dot" class="notification-dot" style="display: none;"></span>
+                    </div>
+
+                    <div id="notificationModal" class="modal">
+                        <div class="modal-content notification-content">
+                            <span class="close" id="notification-close-btn">&times;</span>
+                            <h2>
+                                Alerts
+                            </h2>
+                            
+                            <div id="notification-list">
+                                <p>Loading...</p>
+                            </div>
+
+                            <button id="mark-read-btn" class="btn btn-submit" style="background-color: #5bc0de; margin-top: 15px;">
+                                Mark as Read
+                            </button>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-logout" id="logout-btn">Logout</a>
+                </div>
+            </nav>
+
+            <div class="mobile-nav" id="mobile-nav">
+                <ul class="nav-links">
+                    <li><a href="Inventory_Management" target="_self">Inventory Management</a></li>
+                    <li><a href="Sales_Management" target="_self">Sales Management</a></li>
+                    <li><a href="Sales_Analysis" target="_self">Sales Analysis</a></li>
+                    <li id="alt-med" style="display: none;"><a href="Alternative_Medicine_Advisor" target="_self">Alternative Medicine Advisor</a></li>
+                    <li><a href="Home" target="_self">About</a></li>
+                </ul>
+            </div>
+        </header>
+
+        <h1 class="title_h1">Alternative Medicine Advisor</h1>
+
+        <div id="alt-container">
+        <div class="alt-container">
+
+            <!-- ── SEARCH CARD ── -->
+            <div class="search-card">
+                <div class="search-title"> <strong>Search by:</strong> </div>
+
+                    <!-- Medicine name with autocomplete -->
+                    <div class="field-block">
+                        <label for="ama-name">Medicine Name</label>
+                        <div class="ac-wrap">
+                            <input type="text" id="ama-name" class="search-input" autocomplete="off" >
+                            <div class="ac-dropdown" id="acDrop"></div>
+                        </div>
+                    </div>
+
+                <!-- OR divider -->
+                <div class="or-divider">Or by</div>
+
+                <!-- Composition tags -->
+                <div class="field-block">
+                    <label>Active Composition(s)</label>
+                    <div class="tag-box" id="tagBox" onclick="document.getElementById('tagInput').focus()">
+                        <div class="ac-wrap" style="flex: 1; display: flex; position: relative;">
+                            <input
+                                id="tagInput"
+                                placeholder="e.g. Paracetamol — press Enter or comma to add…"
+                                autocomplete="off"
+                                style="width: 100%;"
+                            >
+                            <div class="ac-dropdown" id="compDrop"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tag-hint">
+                    Add each active component separately.
+                    Press <strong>Enter</strong> or <strong>,</strong> to confirm.
+                </div>
+
+                <div class="or-divider">Filter by</div>
+
+                <!-- Category -->
+                <div class="field-block">
+                    <label for="ama-category">Category</label>
+                    <select id="ama-category" class="search-select">
+                        <option value="all">All Categories</option>
+                        <!-- Populate using unique categories from database -->
+                    </select>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="btn-row" style="margin-top: 20px;">
+                    <button class="btn-clear" id="clearBtn" type="button">✕ Clear All</button>
+                    <button class="btn-search" id="searchBtn" type="button">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        Find Alternatives
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── STATUS BAR ── -->
+            <div class="status-bar" id="statusBar" style="display: none;">
+                <div class="status-left">
+                    <div class="spinner" id="spinner"></div>
+                    <span class="status-count" id="statusCount"></span>
+                    <span class="status-sub"   id="statusSub"></span>
+                </div>
+            </div>
+
+            <!-- ── RESULTS ── -->
+            <div id="resultsArea"></div>
+        </div>
+
+            <div id="status-results" class="results-box">
+                <div class="table-responsive">
+                    <table id="results-table">
+                        <thead>
+                            <tr id="results-head">
+                                </tr>
+                        </thead>
+                        <tbody id="results-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script src="/static/header.js"></script>
+        <script src="/static/alt_med_advisor.js"></script>
+    </body>
+</html>

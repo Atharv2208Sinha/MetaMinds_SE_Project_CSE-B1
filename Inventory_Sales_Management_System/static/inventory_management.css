@@ -1,0 +1,223 @@
+/* Container sizing and centering */
+.inventory-container {
+    width: 90vw;
+    margin: 20px auto;
+    font-family: inherit;
+    display: none;
+}
+
+/* Tab Layout mimicking a file folder layout */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-left: 20px; /* Slight indent like the sketch */
+}
+
+.tab-btn {
+    padding: 12px 25px;
+    border: 2px solid black;
+    border-bottom: none; /* Merges with the border below */
+    background-color: #d3d3d3;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: background-color 0.2s;
+}
+
+.tab-btn:hover {
+    background-color: #e2e2e2;
+}
+
+.tab-btn.active {
+    background-color: #9f9f9f; /* Matches body background */
+    color: black;
+    position: relative;
+    top: 2px; /* Pull down slightly to cover the form border */
+}
+
+/* --- Mode Selector --- */
+.mode-selector {
+    position: absolute;
+    top: 5px;
+    right: 50px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: #e9ecef;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.mode-selector label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.mode-selector select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+/* --- Composition UI --- */
+.composition-container {
+    margin: 20px auto;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.comp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.comp-header label {
+    font-weight: bold;
+    color: #0056b1;
+}
+
+.comp-input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.comp-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+.btn-icon, .btn-remove {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-remove {
+    background-color: #dc3545;
+    padding: 0 15px;
+    font-size: 20px;
+}
+
+/* Form Area Box */
+.form-area {
+    border: 2px solid black;
+    padding: 30px;
+    background-color: transparent; /* Maintains global theme */
+    border-radius: 0 8px 8px 8px; /* Smooth corners except top-left */
+}
+
+/* 2-Column Grid for Add/Update Form */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: black;
+    font-size: 15px;
+}
+
+.form-group input {
+    padding: 12px;
+    border: 1px solid black;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: white;
+}
+
+.form-grid.pharmacist-layout .form-group:nth-child(2) {
+    grid-column-start: 1;
+}
+
+/* Submit Button Override */
+.submit-wrapper {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.oval-btn {
+    padding: 10px 40px;
+    border-radius: 30px; /* Forces the oval shape from the sketch */
+    border: 2px solid black;
+    font-size: 20px;
+}
+
+/* Check Status Tab Specifics */
+.single-search-bar {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.results-box {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: white;
+    border: 1px dashed black;
+    border-radius: 8px;
+    min-height: 150px;
+}
+
+/* Responsive constraints for smaller screens */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr; /* Stack into 1 column on mobile */
+    }
+}
+
+/* --- Table Styles --- */
+.table-responsive {
+    overflow-x: auto;
+}
+
+#results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: white;
+}
+
+#results-table th, #results-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+#results-table th {
+    background-color: #343a40;
+    color: white;
+}
+
+#results-table tr:nth-child(even){background-color: #f2f2f2;}
+#results-table tr:hover {background-color: #ddd;}
+
+#add-view {
+    position: relative; 
+}

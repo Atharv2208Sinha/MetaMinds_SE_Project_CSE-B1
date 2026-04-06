@@ -7,17 +7,20 @@ from mysql.connector import Error, IntegrityError
 from datetime import datetime, timedelta, timezone # <-- For token expiration
 from functools import wraps # <-- For the decorator
 
+
 app = Flask(__name__)
 CORS(app)
-             
+
 app.config['SECRET_KEY'] = 'alpha_controler'
 
 def get_db_connection():
     try:
         connection = mysql.connector.connect(
             host='localhost',
-            user='root',
-            password='9813273362',
+            user='vendora_app',
+            password='Vendora@2026',
+            #  user='root',
+            # password='9813273362',
             database='se_project'
         )
         if connection.is_connected():
@@ -66,10 +69,15 @@ def token_required(f):
 
 @app.route('/')  
 def home():
-    return render_template('main.html')
+    return render_template('home.html')
+
 @app.route('/Home')  
 def home_():
     return render_template('home.html')
+
+@app.route('/Main')  
+def main():
+    return render_template('main.html')
 
 @app.route('/Sign_Up')
 def signup():
@@ -113,12 +121,12 @@ def register_user():
         
         #Get the New User's ID ---
         new_user_id = cursor.lastrowid
-         
+
         TI = f"inventory_{new_user_id}"
         TS = f"sales_{new_user_id}"
         TN = f"read_{new_user_id}"
-        
-        inventory = f"""Create Table {TI}(Iname varchar(50) not null, Bid varchar(50) not null primary key, Quantity int not null, 
+
+        inventory = f"""Create Table {TI}(Iname varchar(100) not null, Bid varchar(100) not null primary key, Quantity int not null, 
                                        Purchase_Price int not null, Sale_Price int not null, MRP int, Exp_Date date not null, 
                                        Purchase_Date date not null, Location varchar(50), Category varchar(50) )"""
         
@@ -130,13 +138,13 @@ def register_user():
 
         cursor.execute(sales)
 
-        read = f"""Create Table {TN}(Iname_Bid varchar(100) not null, type varchar(1) not null check(type = 'L' or type = 'S' or type = 'E'), last_read date not null, primary key(iname_Bid, type))"""
+        read = f"""Create Table {TN}(Iname_Bid varchar(100) not null, type varchar(1) not null check(type = 'L' or type = 'S' or type = 'E'), last_read date not null, primary key(Iname_Bid, type))"""
         # L for low; S for stale; E for expiry
         cursor.execute(read)
-      
+
         if is_pharmacist:
             TC = f"composition_{new_user_id}"
-            composition = f"""Create Table {TC}(Iname varchar(100) not null, component varchar(100) not null, primary key(iname,component))"""
+            composition = f"""Create Table {TC}(Iname varchar(100) not null, component varchar(100) not null, primary key(Iname,component))"""
             cursor.execute(composition)
 
         conn.commit()
@@ -236,11 +244,11 @@ def get_notifications(current_user_id, is_pharmacist):
 def lowAlert(current_user_id, is_pharmacist, cursor, conn):
     if is_pharmacist: low = 50
     else: low = 10
-    
+
     reset_read = f"""Delete from read_{current_user_id} where type = 'L' and last_read < CURDATE()"""
     cursor.execute(reset_read)
     conn.commit()
-    
+
     query = f"""SELECT Iname, sum(quantity) as Q
                 FROM inventory_{current_user_id} 
                 WHERE Iname NOT IN (
