@@ -1,0 +1,3 @@
+uid,name,email,password,is_pharmacist
+1,Rahul Kumar,rahul@gmail.com,$2b$12$n5L/UmnNXij2ZQNAxqedUey7WGnvFwqJRGBhzFB1rRNKdK1BpoNjW,1
+2,Amit Sharma,amit@gmail.com,$2b$12$rHF9I7O4bFnwlQBvNe/KZurdDplWN.llEFRN9JEhzph9WSnERN5aW,0

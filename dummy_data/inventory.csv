@@ -1,0 +1,18 @@
+Iname,Bid,Quantity,Purchase_Price,Sale_Price,MRP,Exp_Date,Purchase_Date,Location,Category
+Dolo 650,PHA001,35,22,28,30,2027-02-15,2026-02-01,Rack A1,Analgesic
+Dolo 650,PHA011,20,23,29,30,2027-03-10,2026-03-01,Rack A1,Analgesic
+Calpol 650,PHA002,42,20,27,30,2026-04-18,2025-01-15,Rack A2,Analgesic
+Cetzine 10,PHA003,48,12,18,20,2026-09-10,2025-02-10,Rack B1,Antihistamine
+Allerfast 10,PHA004,70,11,17,19,2027-01-30,2025-12-22,Rack B2,Antihistamine
+Azithral 500,PHA005,25,68,86,92,2026-08-25,2025-11-05,Rack C1,Antibiotic
+Azee 500,PHA006,38,66,84,90,2026-08-28,2025-10-25,Rack C2,Antibiotic
+ColdRelief Plus,PHA007,32,40,55,60,2026-04-20,2025-03-01,Rack D1,Cold and Flu
+FluGuard Plus,PHA008,28,42,57,62,2026-05-01,2025-04-10,Rack D2,Cold and Flu
+ORS Restore,PHA009,90,14,20,22,2026-12-31,2026-03-05,Rack E1,Electrolyte
+Zincovit,PHA010,18,30,42,45,2026-06-15,2024-12-15,Rack E2,Supplement
+Basmati Rice 5kg,RET001,24,420,515,550,2027-09-30,2026-02-10,Shelf R1,Grains
+Toor Dal 1kg,RET002,9,92,118,125,2026-11-15,2025-08-20,Shelf R2,Pulses
+Sunflower Oil 1L,RET003,16,118,145,150,2026-10-12,2026-01-15,Shelf R3,Oils
+Masala Tea 500g,RET004,7,155,190,200,2026-04-17,2025-06-01,Shelf R4,Beverages
+Wheat Flour 10kg,RET005,13,310,365,380,2027-01-20,2025-09-12,Shelf R5,Grains
+Sugar 1kg,RET006,28,39,48,50,2027-03-15,2026-03-01,Shelf R6,Staples
