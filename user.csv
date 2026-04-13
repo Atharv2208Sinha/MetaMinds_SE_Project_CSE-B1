@@ -1,0 +1,3 @@
+uid,name,email,password,is_pharmacist
+1,Rahul Kumar,rahul@gmail.com,$2b$12$dummyhash,1
+2,Amit Sharma,amit@gmail.com,$2b$12$dummyhash,0
