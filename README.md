@@ -180,4 +180,10 @@ Because the backend connects to a local MySQL database, teammates who are not us
 - Pharmacies handling expiry-sensitive products
 - Wholesalers reviewing monthly and yearly sales trends
 
-
+## Test Credentials
+1. Retail Shopkeeper
+-  Email: a@gmail.com
+-  Password: As2208##
+2. Pharmacist
+-  Email: d@gmail.com
+-  Password: As2208##  
