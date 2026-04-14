@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Main</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <link rel="stylesheet" href="/static/main.css">
+    </head>
+    <body>
+        <header id="non-user">
+            <nav>
+                <div class="nav-left">
+                    <a href="Home" class="logo">Vendora</a>
+                </div>
+
+                <div class="nav-right">
+                    <a href="Sign_Up" class="btn btn-signup" id="signup-btn">Sign Up</a>
+                    <a href="#" class="btn btn-login" id="user-action-btn">Login</a>
+
+                    <div id="loginModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="modal-close-btn">&times;</span>
+                                
+                            <form class="login-form" id="login-modal-form"> 
+                                <h2 style="color: black;">Welcome Back!</h2>
+
+                                <div class="input-group">
+                                    <input type="email" id="login-email" required placeholder="--------@-------">
+                                    <label for="login-phone">Email Id</label> </div>
+
+                                <div class="input-group">
+                                    <input type="password" id="login-password" placeholder="••••••••" required>
+                                    <label for="login-password">Password</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-submit">Login</button>
+                                    
+                                <p class="signup-prompt">
+                                    Don't have an account? 
+                                    <a href="Sign_Up">Sign Up</a> 
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <header id="user"style="display: none;">
+            <nav>
+                <div class="nav-left">
+                    <div class="hamburger" id="hamburger-btn">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <a href="Main" class="logo">Vendora</a>
+                    <ul class="nav-links">
+                        <li><a href="Inventory_Management" target="_self">Inventory Management</a></li>
+                        <li><a href="Sales_Management" target="_self">Sales Management</a></li>
+                        <li><a href="Sales_Analysis" target="_self">Sales Analysis</a></li>
+                        <li id="alt-med" style="display: none;"><a href="Alternative_Medicine_Advisor" target="_self">Alternative Medicine Advisor</a></li>
+                        <li><a href="Home" target="_self">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-right">
+                    <div class="notification-wrapper" style="position: relative; cursor: pointer;">
+                        <a href="#" id="notification-btn" class="notification-link">
+                            <img src="/static/Notification_icon.png" alt="Notification">
+                        </a>
+                        <span id="notification-dot" class="notification-dot" style="display: none;"></span>
+                    </div>
+
+                    <div id="notificationModal" class="modal">
+                        <div class="modal-content notification-content">
+                            <span class="close" id="notification-close-btn">&times;</span>
+                            <h2>
+                                Alerts
+                            </h2>
+                            
+                            <div id="notification-list">
+                                <p>Loading...</p>
+                            </div>
+
+                            <button id="mark-read-btn" class="btn btn-submit" style="background-color: #5bc0de; margin-top: 15px;">
+                                Mark as Read
+                            </button>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-logout" id="logout-btn">Logout</a>
+                </div>
+            </nav>
+
+            <div class="mobile-nav" id="mobile-nav">
+                <ul class="nav-links">
+                    <li><a href="Inventory_Management" target="_self">Inventory Management</a></li>
+                    <li><a href="Sales_Management" target="_self">Sales Management</a></li>
+                    <li><a href="Sales_Analysis" target="_self">Sales Analysis</a></li>
+                    <li id="alt-med" style="display: none;"><a href="Alternative_Medicine_Advisor" target="_self">Alternative Medicine Advisor</a></li>
+                    <li><a href="Home" target="_self">About</a></li>
+                </ul>
+            </div>
+        </header>
+
+        <main class="split-container" id="main-container" style="display: none;">
+            <div class="left-pane">
+                <h1 class="title_h1" style="width: 100%; max-width: 500px; box-sizing: border-box; padding-left: 0; padding-right: 0; text-align: center;">My Profile</h1>
+                <div id="user-profile-data" class="profile-card">
+                    <p style="text-align: center; color: #ccc;">Loading profile...</p>
+                </div>
+            </div>
+            
+            <div class="vertical-divider"></div>
+
+            <div class="right-pane">
+                <h1 class="title_h1" style="width: 100%; max-width: 500px; box-sizing: border-box; padding-left: 0; padding-right: 0; text-align: center;">Quick Actions</h1>
+                <div class="dashboard-buttons">
+                    <a href="Inventory_Management" class="dash-btn">Inventory Management</a>
+                    <a href="Sales_Management" class="dash-btn">Sales Management</a>
+                    <a href="Sales_Analysis" class="dash-btn">Sales Analysis</a>
+                    <a href="Alternative_Medicine_Advisor" id="dash-btn-alt-med" class="dash-btn" style="display: none;">Alternative Medicine Advisor</a>
+                    <a href="Home" class="dash-btn dash-btn-secondary">About / Home</a>
+                </div>
+            </div>
+        </main>
+
+        <script src="/static/main.js"></script>
+        <script src="/static/header.js"></script>
+    </body>
+</html>
