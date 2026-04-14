@@ -347,7 +347,7 @@ def mark_all_notifications_read(current_user_id, is_pharmacist):
         # Fetch current alerts to know what needs to be marked as read
         low = lowAlert(current_user_id, is_pharmacist, cursor, conn)
         stale = staleAlert(current_user_id, is_pharmacist, cursor, conn)
-        exp = expiryAlert(current_user_id, cursor, conn)"""  """
+        exp = expiryAlert(current_user_id, cursor, conn)
 
         # Insert them into the read table
         for item in low:
