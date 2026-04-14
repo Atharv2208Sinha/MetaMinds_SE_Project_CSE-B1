@@ -1,0 +1,117 @@
+/* Container for the split layout */
+.split-container {
+    display: flex;
+    min-height: calc(100vh - 80px); /* Fill screen below header */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Left and Right Halves */
+.left-pane, .right-pane {
+    flex: 1;
+    padding: 20px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+}
+
+/* The Vertical Line */
+.vertical-divider {
+    width: 2px;
+    background-color: #333;
+    border-radius: 2px;
+    margin: 40px 0;
+    opacity: 0.3;
+}
+
+/* User Profile Card Styling */
+.profile-card {
+    background: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    margin-top: 30px;
+}
+
+.profile-card h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.profile-item {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+.profile-label {
+    font-weight: bold;
+    color: #7d7d7d;
+    font-size: 0.85em;
+    display: block;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Big Navigation Buttons Styling */
+.dashboard-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 30px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.dash-btn {
+    display: block;
+    padding: 16px 25px;
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: 2px solid transparent;
+}
+
+.dash-btn:hover {
+    background-color: #0066d3;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    border-color: rgba(255,255,255,0.2);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.dash-btn-secondary {
+    background-color: #555;
+}
+
+.dash-btn-secondary:hover {
+    background-color: #333;
+}
+
+/* Responsive: Stack on smaller screens instead of splitting */
+@media (max-width: 850px) {
+    .split-container {
+        flex-direction: column;
+    }
+    .vertical-divider {
+        width: 100%;
+        height: 2px;
+        margin: 20px 0;
+    }
+    .left-pane, .right-pane {
+        padding: 10px 20px;
+    }
+}
