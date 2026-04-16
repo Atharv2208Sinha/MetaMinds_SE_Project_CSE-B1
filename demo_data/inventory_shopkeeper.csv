@@ -1,0 +1,9 @@
+Iname,Bid,Quantity,Purchase_Price,Sale_Price,MRP,Exp_Date,Purchase_Date,Location,Category
+"atta 10kg",atta10kg1,15,180,200,210,2026-11-10,2026-04-14,NULL,NULL
+bulbs,bulb1,20,60,90,120,2028-11-11,2026-04-14,NULL,NULL
+chips,chips1,5,7,10,NULL,2026-04-13,2026-04-09,NULL,NULL
+chips,chips2,10,7,10,NULL,2026-12-12,2026-04-09,NULL,NULL
+chocolate,chocolate1,50,17,20,20,2026-10-10,2026-04-14,NULL,NULL
+maggi,maggi1,20,8,14,15,2028-06-27,2026-04-13,A1,"instant food"
+"sugar 1kg",sugar1,20,40,50,NULL,2026-10-10,2026-04-14,NULL,NULL
+"sunflower oil",sunflower_oil1,10,120,150,160,2027-02-22,2026-04-14,NULL,NULL

@@ -1,0 +1,26 @@
+Bid,Month,Year,Sold,Quantity,Expenditure,Income,Iname
+bulbs1,7,2025,0,5,300,200,bulbs
+bulbs1,7,2025,1,50,3000,4500,bulbs
+bulbs1,8,2025,0,1,60,0,bulbs
+bulbs1,8,2025,1,20,1200,1800,bulbs
+bulbs2,9,2025,1,25,1500,2300,bulbs
+bulbs2,10,2025,0,5,300,200,bulbs
+bulbs2,10,2025,1,15,900,1300,bulbs
+bulbs3,11,2025,0,2,120,50,bulbs
+bulbs3,11,2025,1,40,2400,3600,bulbs
+bulbs3,12,2025,1,20,1200,1800,bulbs
+maggi0,7,2025,0,10,80,40,maggi
+maggi1,7,2025,1,100,800,1400,maggi
+maggi2,8,2025,1,100,800,1400,maggi
+maggi2,9,2025,1,90,720,1260,maggi
+maggi2,10,2025,1,10,80,140,maggi
+maggi3,10,2025,1,120,960,1680,maggi
+maggi4,11,2025,1,150,1200,2100,maggi
+maggi5,12,2025,1,150,1200,2100,maggi
+oil2,7,2025,1,100,12000,15000,"Ricebran oil"
+oil2,8,2025,1,50,6000,7500,"Ricebran oil"
+oil2,9,2025,1,30,3600,4500,"Ricebran oil"
+oil2,10,2025,0,5,600,0,"Ricebran oil"
+oil3,10,2025,1,20,2400,3000,"Ricebran oil"
+oil3,11,2025,1,20,2400,3000,"Ricebran oil"
+oil3,12,2025,1,20,2400,3000,"Ricebran oil"

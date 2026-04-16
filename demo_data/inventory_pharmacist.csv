@@ -1,0 +1,6 @@
+Iname,Bid,Quantity,Purchase_Price,Sale_Price,MRP,Exp_Date,Purchase_Date,Location,Category
+Demo1,Demo1,49,5,10,NULL,2026-12-12,2026-04-16,NULL,NULL
+Crocin,crocin1,100,1,2,NULL,2029-12-22,2026-04-04,NULL,"fever relief"
+demo2,demo2,49,7,15,NULL,2026-12-12,2026-04-16,NULL,NULL
+dolo,dolo1,100,1,2,NULL,2029-02-22,2026-04-04,NULL,NULL
+dolo,dolo2,50,1,2,2,2026-12-22,2026-04-15,NULL,"fever relief"
