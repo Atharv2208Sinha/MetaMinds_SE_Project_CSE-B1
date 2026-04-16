@@ -102,8 +102,9 @@ nav {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
-.btn-logout { background-color: #ffb575; color: black; }
-.btn-logout:hover { background-color: #c82333; }
+.btn-logout { background-color: #ff9d48; color: white; }
+.btn-logout:hover { background-color: #ff8215;
+text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); }
 
 .btn-submit {
     background-color: #28a745; /* Green submit button */
