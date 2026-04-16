@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <link rel="stylesheet" href="/static/home.css">
+    </head>
+    <body>
+        <header id="non-user">
+            <nav>
+                <div class="nav-left">
+                    <a href="Home" class="logo">Vendora</a>
+                </div>
+
+                <div class="nav-right">
+                    <a href="Sign_Up" class="btn btn-signup" id="signup-btn">Sign Up</a>
+                    <a href="#" class="btn btn-login" id="user-action-btn">Login</a>
+
+                    <div id="loginModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="modal-close-btn">&times;</span>
+                                
+                            <form class="login-form" id="login-modal-form"> 
+                                <h2 style="color: black;">Welcome Back!</h2>
+
+                                <div class="input-group">
+                                    <input type="email" id="login-email" required placeholder="--------@-------">
+                                    <label for="login-phone">Email Id</label> </div>
+
+                                <div class="input-group">
+                                    <input type="password" id="login-password" placeholder="••••••••" required>
+                                    <label for="login-password">Password</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-submit">Login</button>
+                                    
+                                <p class="signup-prompt">
+                                    Don't have an account? 
+                                    <a href="Sign_Up">Sign Up</a> 
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <header id="user"style="display: none;">
+            <nav>
+                <div class="nav-left">
+                    <div class="hamburger" id="hamburger-btn">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <a href="Main" class="logo">Vendora</a>
+                    <ul class="nav-links">
+                        <li><a href="Inventory_Management" target="_self">Inventory Management</a></li>
+                        <li><a href="Sales_Management" target="_self">Sales Management</a></li>
+                        <li><a href="Sales_Analysis" target="_self">Sales Analysis</a></li>
+                        <li id="alt-med" style="display: none;"><a href="Alternative_Medicine_Advisor" target="_self">Alternative Medicine Advisor</a></li>
+                        <li><a href="Home" target="_self">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-right">
+                    <div class="notification-wrapper" style="position: relative; cursor: pointer;">
+                        <a href="#" id="notification-btn" class="notification-link">
+                            <img src="/static/Notification_icon.png" alt="Notification">
+                        </a>
+                        <span id="notification-dot" class="notification-dot" style="display: none;"></span>
+                    </div>
+
+                    <div id="notificationModal" class="modal">
+                        <div class="modal-content notification-content">
+                            <span class="close" id="notification-close-btn">&times;</span>
+                            <h2>
+                                Alerts
+                            </h2>
+                            
+                            <div id="notification-list">
+                                <p>Loading...</p>
+                            </div>
+
+                            <button id="mark-read-btn" class="btn btn-submit" style="background-color: #5bc0de; margin-top: 15px;">
+                                Mark as Read
+                            </button>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-logout" id="logout-btn">Logout</a>
+                </div>
+            </nav>
+
+            <div class="mobile-nav" id="mobile-nav">
+                <ul class="nav-links">
+                    <li><a href="Inventory_Management" target="_self">Inventory Management</a></li>
+                    <li><a href="Sales_Management" target="_self">Sales Management</a></li>
+                    <li><a href="Sales_Analysis" target="_self">Sales Analysis</a></li>
+                    <li id="alt-med" style="display: none;"><a href="Alternative_Medicine_Advisor" target="_self">Alternative Medicine Advisor</a></li>
+                    <li><a href="Home" target="_self">About</a></li>
+                </ul>
+            </div>
+        </header>
+
+        <main class="page-content" style="margin-top: 20px;">
+            
+            <div class="slideshow-container">
+                <div class="mySlides fade">
+                    <img src="/static/slide1.png" alt="Slide 1">
+                </div>
+                <div class="mySlides fade">
+                    <img src="/static/slide2.png" alt="Slide 2">
+                </div>
+                <div class="mySlides fade">
+                    <img src="/static/slide3.png" alt="Slide 3">
+                </div>
+                <div class="mySlides fade">
+                    <img src="/static/slide4.png" alt="Slide 4">
+                </div>
+                <div class="mySlides fade">
+                    <img src="/static/slide5.png" alt="Slide 5">
+                </div>
+                <div class="mySlides fade">
+                    <img src="/static/slide6.png" alt="Slide 6">
+                </div>
+
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+            
+            <div style="text-align:center; margin-top: 15px;">
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+                <span class="dot" onclick="currentSlide(4)"></span>
+                <span class="dot" onclick="currentSlide(5)"></span>
+                <span class="dot" onclick="currentSlide(6)"></span>
+            </div>
+
+            <div class="about-section" style="margin-top: 40px; padding-bottom: 50px;">
+                <h1 class="title_h1" style="text-align: center;">About Vendora</h1>
+                
+                <div style="max-width: 900px; margin: 20px auto; color: black; font-size: 1.1em; line-height: 1.6; padding: 0 20px;">
+                    <p style="margin-bottom: 15px;">
+                        Vendora is designed to help small businesses manage inventory and sales without relying on complex enterprise software. The focus of the project is simplicity: quick stock entry, easy billing, fewer calculation errors, and meaningful business insights that can be used day to day.
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        Beyond inventory tracking, the system also works as a sales analytics platform. Every sale is recorded, product-wise performance can be reviewed over time, and alerts help owners act early when items are running low, becoming stale, or approaching expiry.
+                    </p>
+                    <p style="margin-bottom: 35px;">
+                        For pharmacy-focused workflows, the project also stores medicine composition data to suggest suitable alternatives when a requested product is unavailable.
+                    </p>
+
+                    <h2 style="font-size: 1.5em; border-bottom: 2px solid #555; padding-bottom: 10px; margin-bottom: 20px;">Key Features</h2>
+                    
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; background-color: #23272d; color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                            <thead>
+                                <tr style="background-color: #1a1d21; text-align: left;">
+                                    <th style="padding: 15px 20px; border-bottom: 1px solid #3b424d; width: 30%;">Module</th>
+                                    <th style="padding: 15px 20px; border-bottom: 1px solid #3b424d;">What it does</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Smart Inventory Management</td>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">Tracks stock levels, product details, batch IDs, pricing, category, location, and expiry data</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Billing and Sales Entry</td>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">Supports faster checkout and automatically records product-wise sales activity</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Sales Analytics</td>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">Calculates daily, monthly, and yearly sales performance</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Trend Reporting</td>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">Helps identify high-performing products and overall sales direction</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Low Stock Alerts</td>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">Notifies users before products run out</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Stale Stock Alerts</td>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">Flags inventory that is not moving regularly</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Expiry Alerts</td>
+                                    <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">Highlights stock that is close to expiry</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px 20px; font-weight: bold;">Alternative Medicine Advisor</td>
+                                    <td style="padding: 15px 20px; color: #ccc;">Suggests substitutes using stored composition data for pharmacist users</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="credits-section" style="max-width: 900px; margin: 40px auto; color: black; font-size: 1.1em; line-height: 1.6; padding: 0 20px;">
+                <h2 style="font-size: 1.5em; border-bottom: 2px solid #555; padding-bottom: 10px; margin-bottom: 20px;">Credits</h2>
+                
+                <p style="font-size: 1.2em; margin-bottom: 15px;"><strong>Submitted by:</strong> Team Metaminds</p>
+                <p style="margin-bottom: 10px; font-weight: bold;">Members:</p>
+
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background-color: #23272d; color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+                        <thead>
+                            <tr style="background-color: #1a1d21; text-align: left;">
+                                <th style="padding: 15px 20px; border-bottom: 1px solid #3b424d;">Name</th>
+                                <th style="padding: 15px 20px; border-bottom: 1px solid #3b424d;">Class</th>
+                                <th style="padding: 15px 20px; border-bottom: 1px solid #3b424d;">Roll Number</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Arpit Verma</td>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">CSE-B1</td>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">24293916006</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Piyush Jayswal</td>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">CSE-B1</td>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">24293916017</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Rahul Kumar</td>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">CSE-B1</td>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">24293916038</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; font-weight: bold;">Dheeraj</td>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">CSE-B1</td>
+                                <td style="padding: 15px 20px; border-bottom: 1px solid #3b424d; color: #ccc;">24293916043</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 15px 20px; font-weight: bold;">Atharv Sinha</td>
+                                <td style="padding: 15px 20px; color: #ccc;">CSE-B1</td>
+                                <td style="padding: 15px 20px; color: #ccc;">24293916053</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <script src="/static/home.js"></script>
+        <script src="/static/header.js"></script>
+    </body>
+</html>
